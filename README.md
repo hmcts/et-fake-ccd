@@ -1,8 +1,11 @@
 # EtFakeCcd
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/et_fake_ccd`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem can either be used as part of a test suite, providing a rack endpoint which can be loaded using
+webmock.
 
-TODO: Delete this and the text above, and describe your gem
+OR
+
+It can be used as a standalone server
 
 ## Installation
 
