@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
 
 require "et_fake_ccd"
+require "et_fake_ccd/cli"
+EtFakeCcd::Cli::Root.start(ARGV)

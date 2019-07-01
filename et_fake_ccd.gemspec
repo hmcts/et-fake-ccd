@@ -23,6 +23,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'roda', '~> 3.21'
+  spec.add_dependency 'thor', '~> 0.20.3'
+  spec.add_dependency 'activemodel', '~> 5.2', '>= 5.2.3'
+  spec.add_dependency 'rotp', '~> 5.1'
+
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
