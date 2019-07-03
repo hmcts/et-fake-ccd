@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign in - HMCTS Access</title>
+  </head>
+
+  <body>
+    <form name="loginForm" class="form" novalidate autocomplete="off" method="post">
+      <input type="email" id="username" name="username" value="">
+      <input id="password" name="password" type="password">
+
+      <input type="hidden" name="continue" value="<%= oauth2_redirect_url %>">
+      <input type="hidden" name="upliftToken" value="">
+      <input type="hidden" name="response_type" value="code">
+      <input type="hidden" name="_csrf" value="WXIvDR4i-Hh1Pd5v5m0rthP0la1Sl0olVkXY">
+
+      <input type="hidden" name="redirect_uri" value="<%= oauth2_redirect_url %>">
+      <input type="hidden" name="client_id" value="<%= oauth2_client_id %>">
+      <input type="hidden" name="scope" value="">
+      <input type="hidden" name="state" value="">
+
+
+
+      <input class="button" type="submit" value="Sign in">
+  </form>
+  </body>
+</html>
