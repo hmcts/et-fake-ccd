@@ -8,8 +8,9 @@ module EtFakeCcd
       end
 
       desc "start", "Run multiple services on one port"
+      method_option :port, type: :numeric, default: 8080
       def start
-        Rack::Server.start app: EtFakeCcd::RootApp
+        Rack::Server.start app: EtFakeCcd::RootApp, Port: options.port
       end
     end
   end
