@@ -27,6 +27,13 @@ module EtFakeCcd
             end
           end
         end
+        r.on "data" do
+          r.on "internal" do
+            r.is "profile" do
+              profile_response
+            end
+          end
+        end
       end
 
       private
@@ -62,6 +69,45 @@ module EtFakeCcd
             "delete_draft_response_status": nil,
             "security_classifications": {}
         }
+      end
+
+      def profile_response
+        j = {
+            "user": {
+                "idam": {
+                    "id": "22",
+                    "email": "m@m.com",
+                    "forename": "Buzz",
+                    "surname": "Lightyear",
+                    "roles": [
+                        "caseworker",
+                        "caseworker-employment-tribunal-manchester-caseofficer",
+                        "caseworker-employment-tribunal-manchester-casesupervisor",
+                        "caseworker-employment",
+                        "caseworker-employment-tribunal-manchester",
+                        "caseworker-employment-tribunal-glasgow-caseofficer",
+                        "caseworker-employment-tribunal-glasgow-casesupervisor",
+                        "caseworker-employment-tribunal-glasgow",
+                        "caseworker",
+                        "caseworker-loa1",
+                        "caseworker-employment-tribunal-manchester-caseofficer-loa1",
+                        "caseworker-employment-tribunal-manchester-casesupervisor-loa1",
+                        "caseworker-employment-loa1",
+                        "caseworker-employment-tribunal-manchester-loa1",
+                        "caseworker-employment-tribunal-glasgow-caseofficer-loa1",
+                        "caseworker-employment-tribunal-glasgow-casesupervisor-loa1",
+                        "caseworker-employment-tribunal-glasgow-loa1",
+                        "caseworker-loa1"
+                    ],
+                    "defaultService": "CCD"
+                }
+            },
+            "channels": nil,
+            "jurisdictions": [],
+            "default": {},
+            "_links": {}
+        }
+        JSON.generate j
       end
     end
   end

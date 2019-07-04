@@ -11,7 +11,8 @@ module EtFakeCcd
       route do |r|
         r.is "login" do
           r.get do
-            render("login.html", locals: { oauth2_redirect_url: config.oauth2_redirect_url, oauth2_client_id: config.oauth2_client_id })
+            file = File.absolute_path(File.join('..', 'views', 'login.html.erb'), __dir__)
+            render(path: file, locals: { oauth2_redirect_url: config.oauth2_redirect_url, oauth2_client_id: config.oauth2_client_id })
           end
           r.post do
             r.redirect "/case-management-web/oauth2redirect?code=pfSHb6v4dEDEfqqP"
