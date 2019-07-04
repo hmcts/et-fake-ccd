@@ -50,7 +50,7 @@ module EtFakeCcd
 
       def fetch_all(jid:, ctid:, filters: {}, page: 1, sort_direction: 'asc', page_size: 25)
         hash = data.dig(jid, ctid)
-        return [] if hash.nil? || hash.empty?
+        return {} if hash.nil? || hash.empty?
 
         filtered_list = filter(hash, filters: filters)
         sorted_list = sort(filtered_list, sort_direction: sort_direction)
