@@ -17,7 +17,7 @@ module EtFakeCcd
           end
         end
         r.on "aggregated" do
-          r.is "caseworkers", Integer, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
+          r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
             r.get do
               filters = r.params.dup
               page = (filters.delete('page') || "1").to_i

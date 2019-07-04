@@ -9,7 +9,7 @@ module EtFakeCcd
       plugin :request_headers
       plugin :halt
       route do |r|
-        r.is "caseworkers", Integer, "jurisdictions", String, "case-types", String, "event-triggers", "initiateCase", "token" do |uid, jid, ctid|
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "initiateCase", "token" do |uid, jid, ctid|
           r.get do
             if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
               initiate_case(uid, jid, ctid)
@@ -18,7 +18,7 @@ module EtFakeCcd
             end
           end
         end
-        r.is "caseworkers", Integer, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
           r.post do
             if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
               r.halt 403, forbidden_error_for(r)

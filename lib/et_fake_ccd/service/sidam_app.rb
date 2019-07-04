@@ -18,6 +18,11 @@ module EtFakeCcd
             end
           end
         end
+        r.is "details" do
+          r.get do
+            details_result
+          end
+        end
       end
 
       private
@@ -32,6 +37,29 @@ module EtFakeCcd
             "api_auth_token": "eyJtb25rZXkiOiJkWjFoVTFXb1RPVldZLTUydHRtN1A0OVB4ZTAuKkFBSlRTUUFDTURFQUFsTkxBQnh0THpRMVFsb3JRV1F3TVZZeVVqaE1iVTUxVTNaNFJYVlhaMnM5QUFKVE1RQUEqIiwicmFiYml0Ijoic2Vzc2lvbi1qd3Q9ZXlKMGVYQWlPaUpLVjFRaUxDSmpkSGtpT2lKS1YxUWlMQ0poYkdjaU9pSklVekkxTmlKOS5aWGxLTUdWWVFXbFBhVXBMVmpGUmFVeERTbXhpYlUxcFQybEtRazFVU1RSUk1FcEVURlZvVkUxcVZUSkphWGRwV1ZkNGJrbHFiMmxWYkU1Q1RWWTRNVWx1TUM1elF6VnFSakJFTFd3MVYySktUMGh4Y1ZNM2NVNVhXbXBtYkdrNWRERmlhMjFKYnpWYWVGaFlZa28wYXpkNE5FMTJVMW8zZUdkME9VUjFSR1UzVVVzM2JERnRaa1U1VWpNNUxXUXROMFJrWVdOaFdHVmpVa3Q1T0dOSGJ6UlBYMlpSZHpGc1draHROMjVRWlVwTFdHTkZSMlJJUkZSdE5sZG9iRVJwY3pCdk16SnZhR1ZpWVhOaWJFSk5aRkptWWxkbmMwbFliVUprVEMxQ2NsRnlPV1pJU1RGUFlVaHRlamxUU0c1VVZtdERVR2xvVjFVMGMzbHpSalI2WW5Fd1dUUldRV1U0TTJsak9WSktkMTlITFhKM05TMVdZME14UTB3d2FtdzNWbUZVT1ZOVGRtSm9iWGRsVVhBNGFUbFNTbkpqVm5CQlQzZFJZMHBpU0RobE4wNHdUbFpoY0dobFF6bFRVRTFEVWtNMlptZG5ZMlUzVHpabVZVSnhkemRDVEZSWFlURnhlV0Z5WmtwRGVIRjRaRlZZZUVRNFRXczVXWGhvZEVKRVZGUk1OMXBDUkV0RlN6Qm9TbTFGUlU5VldsSnhPVXh2TlhjdWF6WkRjblJsYmpJNFRtSkJRbUZQUm1keVVHUnNaeTVDVVZwSU1teEZYMFUwVWs5TlMwWnlUSFE1VURaUVpGaDZXRGRqVVhrMU5VaFROazV1Y2tOM1ZsbDNhak5RTUZweVpsVnhjRGhzTTA0dE1FdFZiVE5CZVV0TFQxZExkMGN0VFd4RE9XZGhabTVJVTJ4VE9VUnJkRmRDUkhNM2IyZE5SWG8zVjBKSGN6TlRTVkZuV0Y5c1IySjNSM001TmpObmFXWkVRazFZZHpaRGVWOXBXVmRNY25SYVFXZFlOSEJJTkhSd1dGbHFhbUZpTkhGcmNDMDFSREEzVms1ZmRVcFlNbkJrVDJNemFVWkRhRGxMVkZkUlZWbElXVlV4T1hjME5sSkdkWHBpUXpGWU1rTkZWVkJHUWxCSFRWSXlNRWRQY1U1eVZuVkJkbUpaUkVkWlJXWmlORzFQV0VwRE5ra3djM2xrVVZCNWFqSlBRemgwVUhRNGMxZFdPRWRKUVdWbFpEQndOVE5ETVU5UlFqRlBiSGhSUW5aeGRVVmZTVE5OUjNsdE1uSjBhalpTYWxCa1NHeGxkV2QyTmxSVloyRktjVmRNVUhveVdXNTZTSHBaWTNvdFJsZG9NVWszVW0weVVFUXphVmh3TUU5MGFtWmFjRTB6YTJOaFVFdDFWbkZUTm5sNVNtdHJialJ1TFc0eVZFbEJURTVEY21aNGJXUkVObDlFY2pWU2JUVTFWRlp6WW5OM2NGcFpkbmg0VEVZMlpYRlZTazR5ZUV4eGNURndRa1pvVjAxMWNVaDFVSFF6VEVOeVpESjNSVWxyWm5ocFQxTTBUREZKV1hwUmIyVktlbEJTTUZOUU1GQnpNM0JKU1dRMFdrbE5UbVZsUkdwbVl6Z3RXalZPVURsQlVVVnBUREJNVERsRU1tRm9iV2RIVHpCVlZEaEVlVlpVYURsYU1uWm9UMGhSYTJOcWFUWXdlblJUVEdJMmVHVmFlakp4ZVd4c1kzUm9Rbk5WWms0M09HTm5kamx2ZUdOUk1VSXlhSEV0TkZaUWJsTTNRVGN4ZEY5ZlNtSkVOakZvYzJSeVFWaGphMDkzUkhGYVQxaHNaRzB4U1RKRFVtaEtNVU5uYlhjMmJHdHhTM2hRWTNNNFdEVmtaMVZmWVcxNlpVaFFXWE5UUjI5a2VtbFlVamx1TjJGQ1oyWkhRMjVuZGxWeU1scFBUVGxFUm1WUFZGRmZTMk5KUWkxR1JqaE9YMkp5V0Y5UVFraEhSREJqT1VSS2Jub3lOM04xVWxWTGMzbzJlblJJWTJwUU5tdE5RM1V5TmpBeFlYWjZRbDh3WW5CeGRsZDZVM0oxY3pKTmRXdExaRGRPWmw5aVVsaFJaRkJuTFY5cWVXVndOWGhZTmpSblRqZDVjWEIyVG5KUE5sWXhjemR2VFcxQ1lXZ3phRlEzZFdkUFlsSjZhbXR0ZVZsWVgwVnBlVFJVT0VGMFRrTndZMU5FT0RBMmJIQXdaRVIyWjNVeVpGZFNNVTFuYUZsdk5TMXpYemxzWVdwNk5pMTFWVGQxU0dwWlJtZEllamhUT0VOd09VRTFiRTVhYzNGVFVXRm9kRzltY0VaMFJsWnRhR016U1RoME4ya3RkMWxZVEdoNVlVWk1ibkZ0UzFVMFl6Y3pWbUY1TWkxc1kxUkpTbU5tT1VGMVVHZDFiMFZFUWpKT2Ntc3hZa3RXTUdScFNVeFRPRFpPYVdKWE4ydE1ja2MxVURCb1JIcGllWEpxYW1RMGNUWlpaM2RuV25sdWIyWnRhazlSWm5GdVExbzVaV2xSWDJWR2J6Rm9YMmw1WDBaQmF6UXROVVZVYlVVMk5tOUNPVXMyUm5JelZtYzNSMDFHZUdKbWVYazRjVzVZU3pSdlIwUk9hVXRMTjNvMU1sTmlTbmRLTjJKSFExOHliRGRQUjJwUVNGaHNlbVJaV0VsSlowUldiMVZSZWs1WVZFdHFYMUV6WTBaaFIwUlhZM1Z5VEZFdVNUVlpVVTB6ZW5VeE5VZ3lVbkl3VmtjemNXbEpkdy5sOHBBbEd5WHhEUnQ3N0FZVy1YVHVlRUpMSVprUDV5OFo0MkI5RVotV240OyBQYXRoPS87IEh0dHBPbmx5In0="
         }
         JSON.generate(j)
+      end
+
+      def details_result
+        j = {
+            "id": "650692bb-cefe-466a-ba8d-687377173064",
+            "forename": "Fred",
+            "surname": "Bloggs",
+            "email": "fred.bloggs@gmail.com",
+            "active": true,
+            "roles": [
+                "caseworker-publiclaw-localAuthority",
+                "caseworker-publiclaw",
+                "caseworker",
+                "caseworker-employment-tribunal-manchester",
+                "caseworker-employment-tribunal-manchester-caseofficer",
+                "caseworker-employment-tribunal-manchester-casesupervisor",
+                "caseworker-employment-tribunal-glasgow",
+                "caseworker-employment",
+                "caseworker-employment-tribunal-glasgow-casesupervisor",
+                "caseworker-employment-tribunal-glasgow-caseofficer"
+            ]
+        }
+        JSON.generate j
       end
 
       def render_error_for(command)

@@ -21,12 +21,12 @@ module EtFakeCcd
       def config_result
         j = {
             "login_url": url_for("/authentication-web/login"),
-            "logout_url": url_for("http://localhost:8080/api-gateway/logout"),
-            "api_url": url_for("http://localhost:8080/api-gateway/aggregated"),
-            "case_data_url": url_for("http://localhost:8080/api-gateway/data"),
-            "document_management_url": url_for("http://localhost:8080/api-gateway/documents"),
+            "logout_url": url_for("/api-gateway/logout"),
+            "api_url": url_for("/api-gateway/aggregated"),
+            "case_data_url": url_for("/api-gateway/data"),
+            "document_management_url": url_for("/api-gateway/documents"),
             "pagination_page_size": 25,
-            "oauth2_token_endpoint_url": url_for("http://localhost:8080/api-gateway/oauth2"),
+            "oauth2_token_endpoint_url": url_for("/api-gateway/oauth2"),
             "oauth2_client_id": url_for("ccd_gateway")
         }
         JSON.generate(j)
