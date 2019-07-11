@@ -15,7 +15,12 @@ module EtFakeCcd
             render(path: file, locals: { oauth2_redirect_url: config.oauth2_redirect_url, oauth2_client_id: config.oauth2_client_id })
           end
           r.post do
-            r.redirect "/case-management-web/oauth2redirect?code=pfSHb6v4dEDEfqqP"
+            command = ::EtFakeCcd::Command::LoginUserCommand.from_json(r.params)
+            if command.valid?
+              r.redirect "/case-management-web/oauth2redirect?code=pfSHb6v4dEDEfqqP"
+            else
+              r.halt 401, "Access Denied"
+            end
           end
         end
       end
