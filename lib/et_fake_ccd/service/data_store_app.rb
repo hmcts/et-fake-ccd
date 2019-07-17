@@ -18,6 +18,15 @@ module EtFakeCcd
             end
           end
         end
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "createBulkAction", "token" do |uid, jid, ctid|
+          r.get do
+            if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+              initiate_bulk_case(uid, jid, ctid)
+            else
+              r.halt 403, forbidden_error_for(r)
+            end
+          end
+        end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
           r.post do
             if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
@@ -25,7 +34,12 @@ module EtFakeCcd
               break
             end
             json = JSON.parse(r.body.read)
-            command = ::EtFakeCcd::Command::CreateCaseCommand.from_json json
+            command = case json.dig('event', 'id')
+                      when 'initiateCase' then ::EtFakeCcd::Command::CreateCaseCommand.from_json json
+                      when 'createBulkAction' then ::EtFakeCcd::Command::CreateBulkActionCaseCommand.from_json json
+                      else
+                        r.halt 400, unknown_event_error_for(r)
+            end
             if command.valid?
               id = ::EtFakeCcd::DataStoreService.store_case_data(json, jid: jid, ctid: ctid)
               case_created_response(id, uid, jid, ctid)
@@ -75,6 +89,31 @@ module EtFakeCcd
         JSON.generate(j)
       end
 
+      def initiate_bulk_case(uid, jid, ctid)
+        j = {
+            "token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJvZDRwZ3NhbDQwcTdndHI0Y2F1bmVmZGU5aSIsInN1YiI6IjIyIiwiaWF0IjoxNTYxOTY2NzM1LCJldmVudC1pZCI6ImluaXRpYXRlQ2FzZSIsImNhc2UtdHlwZS1pZCI6IkVtcFRyaWJfTVZQXzEuMF9NYW5jIiwianVyaXNkaWN0aW9uLWlkIjoiRU1QTE9ZTUVOVCIsImNhc2UtdmVyc2lvbiI6ImJmMjFhOWU4ZmJjNWEzODQ2ZmIwNWI0ZmEwODU5ZTA5MTdiMjIwMmYifQ.u-OfexKFu52uvSgTNVHJ5kUQ9KTZGClRIRnGXRPSmGY",
+            "case_details": {
+                "id": nil,
+                "jurisdiction": jid,
+                "state": nil,
+                "case_type_id": ctid,
+                "created_date": nil,
+                "last_modified": nil,
+                "security_classification": nil,
+                "case_data": {},
+                "data_classification": {},
+                "after_submit_callback_response": nil,
+                "callback_response_status_code": nil,
+                "callback_response_status": nil,
+                "delete_draft_response_status_code": nil,
+                "delete_draft_response_status": nil,
+                "security_classifications": {}
+            },
+            "event_id": "createBulkAction"
+        }
+        JSON.generate(j)
+      end
+
       def case_created_response(id, uid, jid, ctid)
         j = case_hash(ctid, id, jid)
         JSON.generate(j)
@@ -109,6 +148,11 @@ module EtFakeCcd
 
       def forbidden_error_for(r)
         j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":403,"error":"Forbidden","message":"Access Denied","path": r.path}
+        JSON.generate(j)
+      end
+
+      def unknown_event_error_for(r)
+        j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":400,"error":"Unknown event","message":"Unknown event","path": r.path}
         JSON.generate(j)
       end
 
