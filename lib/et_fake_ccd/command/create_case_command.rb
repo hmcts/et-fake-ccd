@@ -34,6 +34,21 @@ module EtFakeCcd
         data.dig('data', 'claimantType', 'claimant_mobile_number').tap do |phone|
           errors.add :data, "Case data validation failed", field_error: { id: "claimantType.claimant_mobile_number", message: "The data entered is not valid for this type of field, please delete and re-enter using only valid data" } if phone.present? && phone.length > 14
         end
+        data.dig('data', 'claimantIndType', 'claimant_gender').tap do |gender|
+          next if gender.nil?
+          valid_values = ['Male', 'Female', 'Not Known', 'Non-binary']
+          errors.add :data, "Case data validation failed", field_error: { id: 'claimantIndType.claimant_gender', message: "#{gender} is not a valid value" } unless valid_values.include?(gender)
+        end
+        data.dig('data', 'claimantIndType', 'claimant_title1').tap do |title|
+          next if title.nil?
+          valid_values = ['Mr', 'Mrs', 'Miss', 'Ms', 'Dr', 'Prof', 'Sir', 'Lord', 'Lady', 'Dame', 'Capt', 'Rev', 'Other']
+          errors.add :data, "Case data validation failed", field_error: { id: 'claimantIndType.claimant_title1', message: "#{title} is not a valid value" } unless valid_values.include?(title)
+        end
+        data.dig('data', 'claimantType', 'claimant_contact_preference').tap do |pref|
+          next if pref.nil?
+          valid_values = ['Email', 'Post']
+          errors.add :data, "Case data validation failed", field_error: { id: 'claimantType.claimant_contact_preference', message: "#{pref} is not a valid value" } unless valid_values.include?(pref)
+        end
       end
     end
   end
