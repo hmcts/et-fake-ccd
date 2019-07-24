@@ -49,6 +49,9 @@ module EtFakeCcd
           valid_values = ['Email', 'Post']
           errors.add :data, "Case data validation failed", field_error: { id: 'claimantType.claimant_contact_preference', message: "#{pref} is not a valid value" } unless valid_values.include?(pref)
         end
+        data.dig('data', 'claimantType', 'claimant_addressUK', 'PostCode').tap do |postcode|
+          errors.add :data, "Case data validation failed", field_error: { id: 'claimantType.claimant_addressUK.PostCode', message: "#{postcode} exceed maximum length 14" } if postcode.length > 10
+        end
       end
     end
   end
