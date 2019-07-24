@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    et_fake_ccd (0.1.14)
+    et_fake_ccd (0.1.15)
       activemodel (~> 5.2, >= 5.2.3)
-      puma (~> 4.0, >= 4.0.1)
+      puma (~> 3.12)
       roda (~> 3.21)
       rotp (~> 5.1)
       thor (~> 0.20.3)
@@ -26,10 +26,8 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     minitest (5.11.3)
-    nio4r (2.4.0)
     public_suffix (3.1.1)
-    puma (4.0.1)
-      nio4r (~> 2.0)
+    puma (3.12.1)
     rack (2.0.7)
     rake (10.5.0)
     roda (3.22.0)
