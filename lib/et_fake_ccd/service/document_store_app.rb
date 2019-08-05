@@ -3,6 +3,7 @@ require 'json'
 require 'et_fake_ccd/commands'
 require 'et_fake_ccd/auth_service'
 require 'et_fake_ccd/document_store_service'
+require 'active_support/core_ext/hash'
 module EtFakeCcd
   module Service
     class DocumentStoreApp < Roda
@@ -16,7 +17,7 @@ module EtFakeCcd
               r.halt 403, forbidden_error_for(r)
               break
             end
-            command = ::EtFakeCcd::Command::UploadDocumentCommand.from_json(r.params)
+            command = ::EtFakeCcd::Command::UploadDocumentCommand.from_json(r.params.deep_stringify_keys)
             unless command.valid?
               r.halt 422, render_error_for(command, r)
               break
@@ -110,6 +111,23 @@ module EtFakeCcd
         JSON.generate(j)
       end
 
+      def render_error_for(command, request)
+        j = {
+          "exception": "uk.gov.hmcts.ccd.endpoint.exceptions.CaseValidationException",
+          "timestamp": "2019-07-01T16:02:28.045",
+          "status": 422,
+          "error": "Unprocessable Entity",
+          "message": "Document validation failed",
+          "path": request.path,
+          "details": {
+            "field_errors": command.errors.details[:data].map {|e| e[:field_error]}
+          },
+          "callbackErrors": nil,
+          "callbackWarnings": nil
+        }
+
+        JSON.generate(j)
+      end
 
       def forbidden_error_for(r)
         j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":403,"error":"Forbidden","message":"Access Denied","path": r.path}

@@ -4,6 +4,8 @@ module EtFakeCcd
     class UploadDocumentCommand
       include ActiveModel::Model
       include ActiveModel::Attributes
+      VALID_FILE_EXTENSIONS = ['.pdf', '.csv', '.rtf'].freeze
+      VALID_FILE_CONTENT_TYPES = ['application/pdf', 'text/csv', 'application/rtf'].freeze
 
       attribute :data
 
@@ -16,12 +18,22 @@ module EtFakeCcd
       private
 
       def validate_data
+        validate_file
+      end
 
+      def validate_file
+        return if validate_file_extension && validate_file_content_type
+
+        errors.add :data, "Your upload contains a disallowed file type", field_error: { "id": "files", "message": "Your upload contains a disallowed file type" }
+      end
+
+      def validate_file_content_type
+        VALID_FILE_CONTENT_TYPES.include?(data.dig('files', 'type'))
+      end
+
+      def validate_file_extension
+        VALID_FILE_EXTENSIONS.include?(File.extname(data.dig('files', 'filename')))
       end
     end
   end
 end
-
-#{"exception":"uk.gov.hmcts.ccd.endpoint.exceptions.CaseValidationException","timestamp":"2019-07-01T15:33:41.417","status":422,"error":"Unprocessable Entity","message":"Case data validation failed","path":"/caseworkers/22/jurisdictions/EMPLOYMENT/case-types/EmpTrib_MVP_1.0_Manc/cases","details":{"field_errors":[{"id":"claimantType.claimant_phone_number","message":"The data entered is not valid for this type of field, please delete and re-enter using only valid data"}]},"callbackErrors":null,"callbackWarnings":null}
-#{"exception":"uk.gov.hmcts.ccd.endpoint.exceptions.CaseValidationException","timestamp":"2019-07-01T15:51:15.291","status":422,"error":"Unprocessable Entity","message":"Case data validation failed","path":"/caseworkers/22/jurisdictions/EMPLOYMENT/case-types/EmpTrib_MVP_1.0_Manc/cases","details":{"field_errors":[{"id":"claimantType.claimant_mobile_number","message":"The data entered is not valid for this type of field, please delete and re-enter using only valid data"},{"id":"claimantType.claimant_phone_number","message":"The data entered is not valid for this type of field, please delete and re-enter using only valid data"}]},"callbackErrors":null,"callbackWarnings":null}
-#{"exception":"uk.gov.hmcts.ccd.endpoint.exceptions.CaseValidationException","timestamp":"2019-07-01T16:02:28.045","status":422,"error":"Unprocessable Entity","message":"Case data validation failed","path":"/caseworkers/22/jurisdictions/EMPLOYMENT/case-types/EmpTrib_MVP_1.0_Manc/cases","details":{"field_errors":[{"id":"claimant_TypeOfClaimant","message":"Wrong is not a valid value"},{"id":"claimantType.claimant_mobile_number","message":"The data entered is not valid for this type of field, please delete and re-enter using only valid data"},{"id":"claimantType.claimant_phone_number","message":"The data entered is not valid for this type of field, please delete and re-enter using only valid data"}]},"callbackErrors":null,"callbackWarnings":null}
