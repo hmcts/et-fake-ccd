@@ -14,12 +14,20 @@ module EtFakeCcd
       instance.list(jid: jid, ctid: ctid, filters: filters, page: page, sort_direction: sort_direction, page_size: page_size)
     end
 
+    def self.update_case_data(json, jid:, ctid:, cid:)
+      instance.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
+    end
+
     def store_case_data(json, jid:, ctid:)
       adapter.store(json, jid: jid, ctid: ctid)
     end
 
+    def update_case_data(json, jid:, ctid:, cid:)
+      adapter.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
+    end
+
     def find_case_data_by_id(id, jid:, ctid:)
-      adapter.fetch_by_id(id, jid: jid, ctid: ctid)
+      adapter.fetch_by_id(id.to_s, jid: jid, ctid: ctid)
     end
 
     def list(jid:, ctid:, filters: {}, page: 1, sort_direction: 'asc', page_size: 25)
@@ -40,12 +48,12 @@ module EtFakeCcd
         self.id = id + 1
         data[jid] ||= {}
         data[jid][ctid] ||= {}
-        data[jid][ctid][id] = json
-        id
+        data[jid][ctid][id.to_s] = json
+        id.to_s
       end
 
       def fetch_by_id(id, jid:, ctid:)
-        data.dig(jid, ctid, id)
+        data.dig(jid, ctid, id.to_s)
       end
 
       def fetch_all(jid:, ctid:, filters: {}, page: 1, sort_direction: 'asc', page_size: 25)
@@ -55,6 +63,11 @@ module EtFakeCcd
         filtered_list = filter(hash, filters: filters)
         sorted_list = sort(filtered_list, sort_direction: sort_direction)
         paginate(sorted_list, page_size: page_size, page: page)
+      end
+
+      def update_case_data(json, jid:, ctid:, cid:)
+        existing = fetch_by_id(cid.to_s, jid: jid, ctid: ctid)
+        existing['data'].merge!(json['data'])
       end
 
       private

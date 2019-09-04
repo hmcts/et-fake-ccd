@@ -36,6 +36,27 @@ module EtFakeCcd
             end
           end
         end
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases", String, "events" do |uid, jid, ctid, cid|
+          r.post do
+            if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+              r.halt 403, forbidden_error_for(r)
+              break
+            end
+            json = JSON.parse(r.body.read)
+            command = case json.dig('event', 'id')
+                      when 'uploadDocument' then ::EtFakeCcd::Command::UploadDocumentsToCaseCommand.from_json json
+                      else
+                        r.halt 400, unknown_event_error_for(r)
+                      end
+            if command.valid?
+              ::EtFakeCcd::DataStoreService.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
+              case_updated_response(cid, uid, jid, ctid)
+            else
+              r.halt 422, render_error_for(command, r)
+            end
+
+          end
+        end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
           r.post do
             if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
@@ -149,6 +170,11 @@ module EtFakeCcd
       end
 
       def case_created_response(id, uid, jid, ctid)
+        j = case_hash(ctid, id, jid)
+        JSON.generate(j)
+      end
+
+      def case_updated_response(id, uid, jid, ctid)
         j = case_hash(ctid, id, jid)
         JSON.generate(j)
       end
