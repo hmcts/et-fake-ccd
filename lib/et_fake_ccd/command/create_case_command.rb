@@ -11,10 +11,10 @@ module EtFakeCcd
       attribute :data
 
       def self.from_json(json)
-        new data: json
+        modified_json = json.dup
+        modified_json['data']['ethosCaseReference'] = nextCaseReference
+        new data: modified_json
       end
-
-      before_validate :assign_ethos_reference_number
 
       validate :validate_data
 

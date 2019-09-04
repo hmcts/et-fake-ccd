@@ -71,7 +71,7 @@ module EtFakeCcd
                         r.halt 400, unknown_event_error_for(r)
             end
             if command.valid?
-              id = ::EtFakeCcd::DataStoreService.store_case_data(json, jid: jid, ctid: ctid)
+              id = ::EtFakeCcd::DataStoreService.store_case_data(command.data, jid: jid, ctid: ctid)
               case_created_response(id, uid, jid, ctid)
             else
               r.halt 422, render_error_for(command, r)
