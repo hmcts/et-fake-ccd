@@ -11,20 +11,20 @@ module EtFakeCcd
       attribute :data
 
       def self.from_json(json)
-        modified_json = json.dup
-        modified_json['data']['ethosCaseReference'] = nextCaseReference
-        new data: modified_json
+        new data: json.dup
       end
 
       validate :validate_data
 
       private
 
-      def assign_ethos_reference_number
-        data['ethosCaseReference'] = nextCaseReference
+      def initialize(*)
+        super
+        data['data']['ethosCaseReference'] = nextCaseReference
+
       end
 
-      def nextCaseReference
+      def next_case_reference
         format('%7.4f', Time.now.to_f - ELMOS_BIRTHDAY)[-12..-1].gsub(/\./, '/')
       end
 
