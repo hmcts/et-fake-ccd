@@ -6,6 +6,7 @@ module EtFakeCcd
       include ActiveModel::Attributes
 
       SCHEMA_FILE = File.absolute_path(File.join('..', 'case_create.json'), __dir__)
+      ELMOS_BIRTHDAY = Time.new(2019,9,1).to_f
 
       attribute :data
 
@@ -13,9 +14,19 @@ module EtFakeCcd
         new data: json
       end
 
+      before_validate :assign_ethos_reference_number
+
       validate :validate_data
 
       private
+
+      def assign_ethos_reference_number
+        data['ethosCaseReference'] = nextCaseReference
+      end
+
+      def nextCaseReference
+        format('%7.4f', Time.now.to_f - ELMOS_BIRTHDAY)[-12..-1].gsub(/\./, '/')
+      end
 
       def validate_data
         validate_claimant_type
