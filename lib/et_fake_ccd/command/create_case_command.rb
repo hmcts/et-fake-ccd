@@ -20,7 +20,7 @@ module EtFakeCcd
 
       def initialize(*)
         super
-        data['data']['ethosCaseReference'] = nextCaseReference
+        data['data']['ethosCaseReference'] = next_case_reference
 
       end
 
