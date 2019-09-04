@@ -20,12 +20,11 @@ module EtFakeCcd
 
       def initialize(*)
         super
-        data['data']['ethosCaseReference'] = next_case_reference
-
+        data['data']['ethosCaseReference'] = next_case_reference if data.dig('data', 'ethosCaseReference').nil? || data.dig('data', 'ethosCaseReference') == ''
       end
 
       def next_case_reference
-        format('%7.4f', Time.now.to_f - ELMOS_BIRTHDAY)[-12..-1].gsub(/\./, '/')
+        format('%7.4f', Time.now.to_f - ELMOS_BIRTHDAY).rjust(12, '0')[-12..-1].gsub(/\./, '/')
       end
 
       def validate_data
