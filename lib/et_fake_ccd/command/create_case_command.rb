@@ -23,8 +23,15 @@ module EtFakeCcd
         data['data']['ethosCaseReference'] = next_case_reference if data.dig('data', 'ethosCaseReference').nil? || data.dig('data', 'ethosCaseReference') == ''
       end
 
+      def sequence_for_office(office_code)
+        @sequences ||= {}
+        @sequences[office_code] ||= 0
+        @sequences[office_code] += 1
+      end
+
       def next_case_reference
-        format('%7.4f', Time.now.to_f - ELMOS_BIRTHDAY).rjust(12, '0')[-12..-1].gsub(/\./, '/')
+        office = data.dig('data', 'feeGroupReference')[0,2].to_i
+        "#{office}#{sequence_for_office(office).to_s.rjust(5, '0')}/#{Time.now.year}"
       end
 
       def validate_data
