@@ -46,6 +46,9 @@ module EtFakeCcd
 
       def store(json, jid:, ctid:)
         self.id = id + 1
+        unless ctid =~ /Multiples/
+          json['data']['ethosCaseReference'] = next_case_reference(json.dig('data', 'feeGroupReference')[0,2].to_i) if json.dig('data', 'ethosCaseReference').nil? || json.dig('data', 'ethosCaseReference') == ''
+        end
         data[jid] ||= {}
         data[jid][ctid] ||= {}
         data[jid][ctid][id.to_s] = json
@@ -73,6 +76,16 @@ module EtFakeCcd
       private
 
       attr_accessor :data, :id
+
+      def sequence_for_office(office_code)
+        @sequences ||= {}
+        @sequences[office_code] ||= 0
+        @sequences[office_code] += 1
+      end
+
+      def next_case_reference(office)
+        "#{office}#{sequence_for_office(office).to_s.rjust(5, '0')}/#{Time.now.year}"
+      end
 
       def filter(list, filters:)
         return list if filters.nil? || filters.empty?
