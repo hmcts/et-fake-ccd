@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    et_fake_ccd (0.1.27)
+    et_fake_ccd (0.1.28)
       activemodel (~> 5.2, >= 5.2.3)
       puma (~> 3.12)
       roda (~> 3.21)

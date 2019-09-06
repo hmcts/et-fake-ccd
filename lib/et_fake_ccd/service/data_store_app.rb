@@ -27,10 +27,10 @@ module EtFakeCcd
             end
           end
         end
-        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "uploadDocument", "token" do |uid, jid, ctid|
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases", String, "event-triggers", "uploadDocument", "token" do |uid, jid, ctid, cid|
           r.get do
             if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              initiate_upload_document(uid, jid, ctid)
+              initiate_upload_document(uid, jid, ctid, cid)
             else
               r.halt 403, forbidden_error_for(r)
             end
@@ -144,7 +144,7 @@ module EtFakeCcd
         JSON.generate(j)
       end
 
-      def initiate_upload_document(uid, jid, ctid)
+      def initiate_upload_document(uid, jid, ctid, cid)
         j = {
             "token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJvZDRwZ3NhbDQwcTdndHI0Y2F1bmVmZGU5aSIsInN1YiI6IjIyIiwiaWF0IjoxNTYxOTY2NzM1LCJldmVudC1pZCI6ImluaXRpYXRlQ2FzZSIsImNhc2UtdHlwZS1pZCI6IkVtcFRyaWJfTVZQXzEuMF9NYW5jIiwianVyaXNkaWN0aW9uLWlkIjoiRU1QTE9ZTUVOVCIsImNhc2UtdmVyc2lvbiI6ImJmMjFhOWU4ZmJjNWEzODQ2ZmIwNWI0ZmEwODU5ZTA5MTdiMjIwMmYifQ.u-OfexKFu52uvSgTNVHJ5kUQ9KTZGClRIRnGXRPSmGY",
             "case_details": {
