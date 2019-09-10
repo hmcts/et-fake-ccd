@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'roda', '~> 3.21'
   spec.add_dependency 'thor', '~> 0.20.3'
-  spec.add_dependency 'activemodel', '~> 5.2', '>= 5.2.3'
+  spec.add_dependency 'activemodel', '>= 5.2.3'
   spec.add_dependency 'rotp', '~> 5.1'
   spec.add_dependency 'tilt', '~> 2.0', '>= 2.0.9'
   spec.add_dependency 'puma', '~> 3.12'
