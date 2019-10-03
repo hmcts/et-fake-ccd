@@ -114,7 +114,7 @@ module EtFakeCcd
         method_name = "render_#{error.downcase}".to_sym
         return unless respond_to?(method_name, true)
 
-        send method_name r
+        send method_name, r
       end
 
       def track_request_id(request_id)
