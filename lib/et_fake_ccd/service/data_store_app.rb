@@ -148,7 +148,7 @@ module EtFakeCcd
           "message": "Case data validation failed",
           "path": request.path,
           "details": {
-            "field_errors": command.errors.details[:data].map {|e| e[:field_error]}
+            "field_errors": []
           },
           "callbackErrors": nil,
           "callbackWarnings": nil
