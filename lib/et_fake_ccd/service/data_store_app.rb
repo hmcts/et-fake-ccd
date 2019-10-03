@@ -101,20 +101,20 @@ module EtFakeCcd
         return false unless data.dig('data', 'claimantIndType', 'claimant_first_names')&.strip&.downcase == 'force'
         error, client_id = data.dig('data', 'claimantIndType', 'claimant_last_name').split('-')
         if client_id.nil?
-          render_error(error)
+          render_error(error, r)
         else
           track_request_id("#{error}-#{client_id}")
           return false unless should_error_for_request_id?("#{error}-#{client_id}")
-          render_error(error)
+          render_error(error, r)
         end
         true
       end
 
-      def render_error(error)
+      def render_error(error, r)
         method_name = "render_#{error.downcase}".to_sym
         return unless respond_to?(method_name, true)
 
-        send method_name
+        send method_name r
       end
 
       def track_request_id(request_id)
@@ -125,21 +125,21 @@ module EtFakeCcd
         RequestStoreService.count(request_id) > 0
       end
 
-      def render_error403
+      def render_error403(r)
         r.halt 403, forbidden_error_for(r)
       end
 
-      def render_error504
+      def render_error504(r)
         j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":504,"error":"Forbidden","message":"Access Denied","path": r.path}
         r.halt 504, JSON.generate(j)
       end
 
-      def render_error502
+      def render_error502(r)
         j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":502,"error":"Forbidden","message":"Access Denied","path": r.path}
         r.halt 502, JSON.generate(j)
       end
 
-      def render_error422
+      def render_error422(r)
         j = {
           "exception": "uk.gov.hmcts.ccd.endpoint.exceptions.CaseValidationException",
           "timestamp": "2019-07-01T16:02:28.045",

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    et_fake_ccd (0.1.33)
+    et_fake_ccd (0.1.34)
       activemodel (>= 5.2.3)
       iodine (~> 0.7)
       roda (~> 3.21)
