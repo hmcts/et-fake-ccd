@@ -98,7 +98,7 @@ module EtFakeCcd
       private
 
       def force_deliberate_error(data, r)
-        return false unless data.dig('data', 'claimantIndType', 'claimant_first_names').strip.downcase == 'force'
+        return false unless data.dig('data', 'claimantIndType', 'claimant_first_names')&.strip&.downcase == 'force'
         error, client_id = data.dig('data', 'claimantIndType', 'claimant_last_name').split('-')
         if client_id.nil?
           render_error(error)
