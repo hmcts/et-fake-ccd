@@ -122,7 +122,7 @@ module EtFakeCcd
       end
 
       def should_error_for_request_id?(request_id)
-        RequestStoreService.count(request_id) > 0
+        RequestStoreService.count(request_id) == 1
       end
 
       def render_error403(r)
