@@ -46,7 +46,10 @@ module EtFakeCcd
 
       def store(json, jid:, ctid:)
         self.id = id + 1
-        unless ctid =~ /Multiples/
+        if ctid =~ /Multiples/
+          primary_case_ref = json.dig('data', 'caseIdCollection').first.dig('value', 'ethos_CaseReference')
+          json['data']['multipleReference'] = next_case_reference(primary_case_ref[0,2]) if primary_case_ref && (json.dig('data', 'multipleReference').nil? || json.dig('data', 'multipleReference') == '')
+        else
           json['data']['ethosCaseReference'] = next_case_reference(json.dig('data', 'feeGroupReference')[0,2].to_i) if json.dig('data', 'ethosCaseReference').nil? || json.dig('data', 'ethosCaseReference') == ''
         end
         data[jid] ||= {}

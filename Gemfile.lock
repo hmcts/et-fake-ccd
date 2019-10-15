@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    et_fake_ccd (0.1.36)
+    et_fake_ccd (0.1.37)
       activemodel (>= 5.2.3)
       iodine (~> 0.7)
       roda (~> 3.21)
@@ -53,7 +53,7 @@ GEM
     tilt (2.0.10)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    zeitwerk (2.1.10)
+    zeitwerk (2.2.0)
 
 PLATFORMS
   ruby
