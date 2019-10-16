@@ -60,7 +60,7 @@ module EtFakeCcd
       def validate_json_schema
         return if EtFakeCcd.config.create_case_schema_file.nil?
 
-        schema_errors = JSON::Validator.fully_validate(EtFakeCcd.config.create_case_schema_file, json)
+        schema_errors = JSON::Validator.fully_validate(EtFakeCcd.config.create_case_schema_file, data['data'])
         return if schema_errors.empty?
 
         schema_errors.each do |error|
