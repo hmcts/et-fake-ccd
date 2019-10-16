@@ -1,4 +1,5 @@
 require 'active_model'
+require 'json-schema'
 module EtFakeCcd
   module Command
     class CreateCaseCommand
@@ -19,6 +20,7 @@ module EtFakeCcd
       private
 
       def validate_data
+        validate_json_schema
         validate_claimant_type
         validate_primary_claimant
       end
@@ -52,6 +54,17 @@ module EtFakeCcd
         end
         data.dig('data', 'claimantType', 'claimant_addressUK', 'PostCode').tap do |postcode|
           errors.add :data, "Case data validation failed", field_error: { id: 'claimantType.claimant_addressUK.PostCode', message: "#{postcode} exceed maximum length 10" } if postcode.length > 10
+        end
+      end
+
+      def validate_json_schema
+        return if EtFakeCcd.config.create_case_schema_file.nil?
+
+        schema_errors = JSON::Validator.fully_validate(EtFakeCcd.config.create_case_schema_file, json)
+        return if schema_errors.empty?
+
+        schema_errors.each do |error|
+          errors.add :data, 'Case data validation failed (json schema)', field_error: { id: 'none', message: error }
         end
       end
     end

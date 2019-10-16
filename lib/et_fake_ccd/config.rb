@@ -5,6 +5,7 @@ module EtFakeCcd
 
     attr_accessor :microservice, :microservice_secret, :valid_credentials, :oauth2_client_id, :oauth2_redirect_url
     attr_accessor :file_storage_path
+    attr_accessor :create_case_schema_file
   end
 
   Config.instance.tap do |c|

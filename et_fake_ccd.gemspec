@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rotp', '~> 5.1'
   spec.add_dependency 'tilt', '~> 2.0', '>= 2.0.9'
   spec.add_dependency 'iodine', '~> 0.7'
+  spec.add_dependency 'json-schema', '~> 2.5'
 
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
