@@ -15,47 +15,9 @@ module EtFakeCcd
         new data: json.dup
       end
 
-      validate :validate_data
+      validate :validate_json_schema
 
       private
-
-      def validate_data
-        validate_json_schema
-        validate_claimant_type
-        validate_primary_claimant
-      end
-
-      def validate_claimant_type
-        data.dig('data', 'claimant_TypeOfClaimant').tap do |claimant_type|
-          errors.add :data, "Case data validation failed", field_error: { "id": "claimant_TypeOfClaimant", "message": "Wrong is not a valid value" } unless ['Individual', 'Company'].include?(claimant_type)
-        end
-      end
-      def validate_primary_claimant
-        data.dig('data', 'claimantType', 'claimant_phone_number').tap do |phone|
-          errors.add :data, "Case data validation failed", field_error: { id: "claimantType.claimant_phone_number", message: "The data entered is not valid for this type of field, please delete and re-enter using only valid data" } if phone.present? && phone.length > 14
-        end
-        data.dig('data', 'claimantType', 'claimant_mobile_number').tap do |phone|
-          errors.add :data, "Case data validation failed", field_error: { id: "claimantType.claimant_mobile_number", message: "The data entered is not valid for this type of field, please delete and re-enter using only valid data" } if phone.present? && phone.length > 14
-        end
-        data.dig('data', 'claimantIndType', 'claimant_gender').tap do |gender|
-          next if gender.nil?
-          valid_values = ['Male', 'Female', 'Not Known', 'Non-binary']
-          errors.add :data, "Case data validation failed", field_error: { id: 'claimantIndType.claimant_gender', message: "#{gender} is not a valid value" } unless valid_values.include?(gender)
-        end
-        data.dig('data', 'claimantIndType', 'claimant_title1').tap do |title|
-          next if title.nil?
-          valid_values = ['Mr', 'Mrs', 'Miss', 'Ms', 'Dr', 'Prof', 'Sir', 'Lord', 'Lady', 'Dame', 'Capt', 'Rev', 'Other']
-          errors.add :data, "Case data validation failed", field_error: { id: 'claimantIndType.claimant_title1', message: "#{title} is not a valid value" } unless valid_values.include?(title)
-        end
-        data.dig('data', 'claimantType', 'claimant_contact_preference').tap do |pref|
-          next if pref.nil?
-          valid_values = ['Email', 'Post']
-          errors.add :data, "Case data validation failed", field_error: { id: 'claimantType.claimant_contact_preference', message: "#{pref} is not a valid value" } unless valid_values.include?(pref)
-        end
-        data.dig('data', 'claimantType', 'claimant_addressUK', 'PostCode').tap do |postcode|
-          errors.add :data, "Case data validation failed", field_error: { id: 'claimantType.claimant_addressUK.PostCode', message: "#{postcode} exceed maximum length 10" } if postcode.length > 10
-        end
-      end
 
       def validate_json_schema
         return if EtFakeCcd.config.create_case_schema_file.nil?
