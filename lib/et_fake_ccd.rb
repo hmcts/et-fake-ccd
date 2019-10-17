@@ -8,7 +8,9 @@ module EtFakeCcd
   # Your code goes here...
   #
   def self.config
-    Config.instance
+    Config.instance.tap do |instance|
+      yield instance if block_given?
+    end
   end
 end
 

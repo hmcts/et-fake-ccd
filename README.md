@@ -31,6 +31,16 @@ To run the server, use the command
 et_fake_ccd start
 ```
 
+or if you want to specify which json schema file you want to use for validation (no default
+is provided as it changes in CCD regularly using the config file), you can either specify the otion
+'create_case_schema' as shown below OR you can specify the environment variable ET_FAKE_CCD_CREATE_CASE_SCHEMA instead.
+
+The 'master' definition of this file is here https://raw.githubusercontent.com/hmcts/et-ccd-export/develop/spec/json_schemas/case_create.json
+so use wget or curl etc.. or just a browser to download it if you want real life validation.
+
+```
+et_fake_ccd start --create_case_schema=<path_to_file>
+```
 ## Testing Using This Fake Server
 
 In general, this server will try to act like the normal CCD server but only in terms of accepting
