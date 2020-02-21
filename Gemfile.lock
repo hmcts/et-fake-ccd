@@ -33,7 +33,7 @@ GEM
     minitest (5.14.0)
     public_suffix (4.0.3)
     rack (2.2.2)
-    rake (10.5.0)
+    rake (13.0.1)
     roda (3.29.0)
       rack
     rotp (5.1.0)
@@ -64,7 +64,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 2.0)
   et_fake_ccd!
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.0)
 
 BUNDLED WITH
