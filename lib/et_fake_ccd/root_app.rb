@@ -6,6 +6,7 @@ require "et_fake_ccd/service/document_store_app"
 require "et_fake_ccd/service/authentication_web_app"
 require "et_fake_ccd/service/case_management_web_app"
 require "et_fake_ccd/service/api_gateway_web_app"
+require "et_fake_ccd/service/ecm_app"
 module EtFakeCcd
   class RootApp < Roda
     plugin :multi_run
@@ -16,6 +17,7 @@ module EtFakeCcd
     run "authentication-web", Service::AuthenticationWebApp
     run "case-management-web", Service::CaseManagementWebApp
     run "api-gateway", Service::ApiGatewayWebApp
+    run "ecm", Service::EcmApp
 
     route do |r|
       r.multi_run
