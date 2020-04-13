@@ -7,7 +7,7 @@ module EtFakeCcd
 
       # @!attribute case_ref_number_count
       #  @return [Integer] The number of case references to generate
-      attribute :case_ref_number_count
+      attribute :case_ref_number_count, :integer
 
       # @!attribute case_type_id
       #  @return [String] The ccd case type id (e.g. Manchester, Glasgow)
