@@ -31,6 +31,7 @@ module EtFakeCcd
     end
 
     def office_code_for(case_type_id)
+      case_type_id = case_type_id.gsub(/_Dev\z/, '')
       office_code = OFFICE_CODE_LOOKUP[case_type_id]
       raise "Case type id #{case_type_id} has no office lookup defined in the fake ccd server" if office_code.nil?
 
