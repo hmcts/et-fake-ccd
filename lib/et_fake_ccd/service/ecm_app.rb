@@ -9,7 +9,7 @@ module EtFakeCcd
       plugin :request_headers
       plugin :halt
       route do |r|
-        r.is "startMultiple" do
+        r.is "generateCaseRefNumbers" do
           r.post do
             unless EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
               r.halt 403, forbidden_error_for(r)
