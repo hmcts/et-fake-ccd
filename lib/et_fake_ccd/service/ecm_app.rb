@@ -35,9 +35,11 @@ module EtFakeCcd
 
       def start_multiple_response(response)
         j = {
-          "caseRefNumberCount": response.case_reference_count,
-          "startCaseRefNumber": response.start_reference,
-          "multipleRefNumber": response.multiple_reference
+          "data": {
+            "caseRefNumberCount": response.case_reference_count,
+            "startCaseRefNumber": response.start_reference,
+            "multipleRefNumber": response.multiple_reference
+          }
         }
         JSON.generate(j)
       end
