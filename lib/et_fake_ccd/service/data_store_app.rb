@@ -19,7 +19,7 @@ module EtFakeCcd
             end
           end
         end
-        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "createBulkAction", "token" do |uid, jid, ctid|
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "createMultiple", "token" do |uid, jid, ctid|
           r.get do
             if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
               initiate_bulk_case(uid, jid, ctid)
@@ -69,7 +69,7 @@ module EtFakeCcd
 
             command = case json.dig('event', 'id')
             when 'initiateCase' then ::EtFakeCcd::Command::CreateCaseCommand.from_json json
-                      when 'createBulkAction' then ::EtFakeCcd::Command::CreateBulkActionCaseCommand.from_json json
+                      when 'createMultiple' then ::EtFakeCcd::Command::CreateMultipleCaseCommand.from_json json
                       else
                         r.halt 400, unknown_event_error_for(r)
                       end
@@ -202,7 +202,7 @@ module EtFakeCcd
                 "delete_draft_response_status": nil,
                 "security_classifications": {}
             },
-            "event_id": "createBulkAction"
+            "event_id": "createMultiple"
         }
         JSON.generate(j)
       end

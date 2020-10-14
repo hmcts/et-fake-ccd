@@ -1,7 +1,7 @@
 require 'active_model'
 module EtFakeCcd
   module Command
-    class CreateBulkActionCaseCommand
+    class CreateMultipleCaseCommand
       include ActiveModel::Model
       include ActiveModel::Attributes
 
