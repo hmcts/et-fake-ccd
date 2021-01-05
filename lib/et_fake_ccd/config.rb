@@ -1,4 +1,5 @@
 require 'singleton'
+require 'fileutils'
 module EtFakeCcd
   class Config
     include Singleton
