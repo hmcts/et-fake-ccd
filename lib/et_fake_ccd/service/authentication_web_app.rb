@@ -2,9 +2,11 @@ require 'roda'
 require 'json'
 require 'et_fake_ccd/commands'
 require 'et_fake_ccd/auth_service'
+require 'et_fake_ccd/forced_error_handling'
 module EtFakeCcd
   module Service
     class AuthenticationWebApp < Roda
+      include EtFakeCcd::ForcedErrorHandling
       plugin :request_headers
       plugin :halt
       plugin :render

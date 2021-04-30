@@ -4,9 +4,11 @@ require 'et_fake_ccd/commands'
 require 'et_fake_ccd/auth_service'
 require 'et_fake_ccd/document_store_service'
 require 'active_support/core_ext/hash'
+require 'et_fake_ccd/forced_error_handling'
 module EtFakeCcd
   module Service
     class DocumentStoreApp < Roda
+      include EtFakeCcd::ForcedErrorHandling
       plugin :request_headers
       plugin :halt
       plugin :sinatra_helpers
