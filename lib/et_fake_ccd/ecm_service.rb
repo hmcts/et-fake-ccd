@@ -3,7 +3,17 @@ module EtFakeCcd
   class EcmService
     OFFICE_CODE_LOOKUP = {
       'Manchester' => '24',
-      'Glasgow' => '41'
+      'Glasgow' => '41',
+      'Test1' => '60',
+      'Test2' => '61',
+      'Test3' => '62',
+      'Test4' => '63',
+      'Test5' => '64',
+      'Test6' => '65',
+      'Test7' => '66',
+      'Test8' => '67',
+      'Test9' => '68',
+      'Test10' => '69'
     }
     Response = Struct.new(:case_reference_count, :start_reference, :multiple_reference)
     # @param [EtFakeCcd::Command::StartMultipleCommand] command

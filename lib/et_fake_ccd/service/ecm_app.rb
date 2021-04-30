@@ -65,6 +65,11 @@ module EtFakeCcd
 
         JSON.generate(j)
       end
+
+      def forbidden_error_for(r)
+        j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":403,"error":"Forbidden","message":"Access Denied","path": r.path}
+        JSON.generate(j)
+      end
     end
   end
 end
