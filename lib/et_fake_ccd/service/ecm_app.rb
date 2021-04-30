@@ -11,17 +11,19 @@ module EtFakeCcd
       route do |r|
         r.is "generateCaseRefNumbers" do
           r.post do
-            unless EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              r.halt 403, forbidden_error_for(r)
-              break
-            end
-            json = JSON.parse(r.body.read)
-            command = ::EtFakeCcd::Command::StartMultipleCommand.from_json json
-            if command.valid?
-              response = ::EtFakeCcd::EcmService.start_multiple(command)
-              start_multiple_response(response)
-            else
-              r.halt 422, render_error_for(command, r)
+            with_forced_error_handling(r, stage: :data) do
+              unless EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                r.halt 403, forbidden_error_for(r)
+                break
+              end
+              json = JSON.parse(r.body.read)
+              command = ::EtFakeCcd::Command::StartMultipleCommand.from_json json
+              if command.valid?
+                response = ::EtFakeCcd::EcmService.start_multiple(command)
+                start_multiple_response(response)
+              else
+                r.halt 422, render_error_for(command, r)
+              end
             end
           end
         end

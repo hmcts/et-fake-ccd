@@ -10,17 +10,21 @@ module EtFakeCcd
       route do |r|
         r.is "loginUser" do
           r.post do
-            command = ::EtFakeCcd::Command::LoginUserCommand.from_json(r.params)
-            if command.valid?
-              logged_in_result
-            else
-              r.halt 401, render_error_for(command)
+            with_forced_error_handling(r, stage: :token) do
+              command = ::EtFakeCcd::Command::LoginUserCommand.from_json(r.params)
+              if command.valid?
+                logged_in_result
+              else
+                r.halt 401, render_error_for(command)
+              end
             end
           end
         end
         r.is "details" do
           r.get do
-            details_result
+            with_forced_error_handling(r, stage: :token) do
+              details_result
+            end
           end
         end
       end

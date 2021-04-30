@@ -9,12 +9,14 @@ module EtFakeCcd
       plugin :halt
       route do |r|
         r.is "lease" do
-          r.post do
-            command = ::EtFakeCcd::Command::LeaseCommand.from_json JSON.parse(r.body.read)
-            if command.valid?
-              ::EtFakeCcd::AuthService.generate_service_token
-            else
-              r.halt 403, render_error_for(command)
+          with_forced_error_handling(r, stage: :token) do
+            r.post do
+              command = ::EtFakeCcd::Command::LeaseCommand.from_json JSON.parse(r.body.read)
+              if command.valid?
+                ::EtFakeCcd::AuthService.generate_service_token
+              else
+                r.halt 403, render_error_for(command)
+              end
             end
           end
         end

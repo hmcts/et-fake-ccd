@@ -97,7 +97,74 @@ So, here is a list of deliberate errors that Im sure will increase in size :-
 * Use the lead claimant title of "Mr" to only force the error on the first occurence
 * Use the lead claimant title of "Mrs" to force the error on every occurence
 
+### Improved Deliberate Error Control
 
+The above deliberate error mechanism worked, it does not give quite enough control.
+
+A new system has therefore been developed that you can use instead of it.
+
+This uses special configuration settings in the 'External System' in the admin.
+
+There are 2 key entries
+
+1. 'extra_headers'
+2. 'send_request_id'
+
+#### extra_headers
+
+'extra_headers' should contain a JSON encoded value of a hash.  Each entry in the hash is a header
+to add to every request to this fake ccd server.
+
+##### force_failures header
+
+The force_failures header should contain a hash which looks like this
+
+```json
+    {
+      "idam_stage": { ..spec.. },
+      "token_stage": { ..spec.. },
+      "data_stage": { ..spec.. }
+    } 
+
+```
+
+The 4 different stages give control of when the error will happen
+
+The 'idam_stage' is the stage of the transaction when an IDAM token is requested.
+However, this does not happen all of the time because IDAM tokens are cached, so
+you will not necessarily see one request per transaction.
+
+The 'token_stage' is used in most transactions such as case creation
+where a 'token' is the starting stage - which then allows the case
+to be created against this token.
+
+The 'documents' stage is used in transactions that require documents uploading before the
+case is created.
+
+The 'data_stage' is used in most transactions and means the actual data
+creation.
+
+The '..spec..' is the same irrespective of which stage and is described below:
+
+```json
+    [a, b, c]
+```
+
+a, b, c (you can specify as many as you want here, not just 3)
+are http response codes for the 'nth' request.  i.e. the first argument
+is for the first request, the 2nd for the 2nd etc..
+The special value of 0 means allow the normal response and do not force an
+error - allowing for patterns such as error on the 1st, 2nd and 5th.
+
+Any non zero value is the http status code to respond with.
+
+#### send_request_id
+
+'send_request_id' should be set to 'true' to enable a request identifier to be sent with every
+request to this fake ccd server.  This identifier is unique to a particular export from the main system,
+so it will persist even across retries of the same export.
+
+This is then used to assist in special rules where errors are forced on the 'nth' request for example.
 
 
 ## Development

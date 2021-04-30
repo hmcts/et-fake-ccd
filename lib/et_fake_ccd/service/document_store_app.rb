@@ -13,27 +13,31 @@ module EtFakeCcd
       route do |r|
         r.is "documents" do
           r.post do
-            unless EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              r.halt 403, forbidden_error_for(r)
-              break
-            end
-            command = ::EtFakeCcd::Command::UploadDocumentCommand.from_json(r.params.deep_stringify_keys)
-            unless command.valid?
-              r.halt 422, render_error_for(command, r)
-              break
-            end
+            with_forced_error_handling(r, stage: :documents) do
+              unless EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                r.halt 403, forbidden_error_for(r)
+                break
+              end
+              command = ::EtFakeCcd::Command::UploadDocumentCommand.from_json(r.params.deep_stringify_keys)
+              unless command.valid?
+                r.halt 422, render_error_for(command, r)
+                break
+              end
 
-            upload_document(r)
+              upload_document(r)
+            end
           end
         end
         r.is "documents", String, "binary" do |uuid|
-          r.get do
-            file = ::EtFakeCcd::DocumentStoreService.find_file_by_id(uuid)
-            unless file
-              r.halt 404, not_found_error_for(r)
-              break
+          with_forced_error_handling(r, stage: :documents) do
+            r.get do
+              file = ::EtFakeCcd::DocumentStoreService.find_file_by_id(uuid)
+              unless file
+                r.halt 404, not_found_error_for(r)
+                break
+              end
+              send_file file.path
             end
-            send_file file.path
           end
         end
       end

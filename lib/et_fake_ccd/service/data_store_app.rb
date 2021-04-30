@@ -1,96 +1,109 @@
 require 'roda'
 require 'json'
 require 'et_fake_ccd/commands'
+require 'et_fake_ccd/forced_error_handling'
 require 'et_fake_ccd/auth_service'
 require 'et_fake_ccd/data_store_service'
 require 'et_fake_ccd/request_store_service'
 module EtFakeCcd
   module Service
     class DataStoreApp < Roda
+      include ForcedErrorHandling
       plugin :request_headers
       plugin :halt
       route do |r|
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "initiateCase", "token" do |uid, jid, ctid|
           r.get do
-            if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              initiate_case(uid, jid, ctid)
-            else
-              r.halt 403, forbidden_error_for(r)
+            with_forced_error_handling(r, stage: :token) do
+              if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                initiate_case(uid, jid, ctid)
+              else
+                r.halt 403, forbidden_error_for(r)
+              end
             end
           end
         end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "event-triggers", "createMultiple", "token" do |uid, jid, ctid|
           r.get do
-            if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              initiate_bulk_case(uid, jid, ctid)
-            else
-              r.halt 403, forbidden_error_for(r)
+            with_forced_error_handling(r, stage: :token) do
+              if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                initiate_bulk_case(uid, jid, ctid)
+              else
+                r.halt 403, forbidden_error_for(r)
+              end
             end
           end
         end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases", String, "event-triggers", "uploadDocument", "token" do |uid, jid, ctid, cid|
           r.get do
-            if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              initiate_upload_document(uid, jid, ctid, cid)
-            else
-              r.halt 403, forbidden_error_for(r)
+            with_forced_error_handling(r, stage: :documents) do
+              if EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) && EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                initiate_upload_document(uid, jid, ctid, cid)
+              else
+                r.halt 403, forbidden_error_for(r)
+              end
             end
           end
         end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases", String, "events" do |uid, jid, ctid, cid|
           r.post do
-            if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              r.halt 403, forbidden_error_for(r)
-              break
+            with_forced_error_handling(r, stage: :documents) do
+              if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                r.halt 403, forbidden_error_for(r)
+                break
+              end
+              json = JSON.parse(r.body.read)
+              command = case json.dig('event', 'id')
+                        when 'uploadDocument' then ::EtFakeCcd::Command::UploadDocumentsToCaseCommand.from_json json
+                        else
+                          r.halt 400, unknown_event_error_for(r)
+                        end
+              if command.valid?
+                ::EtFakeCcd::DataStoreService.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
+                case_updated_response(cid, uid, jid, ctid)
+              else
+                r.halt 422, render_error_for(command, r)
+              end
             end
-            json = JSON.parse(r.body.read)
-            command = case json.dig('event', 'id')
-                      when 'uploadDocument' then ::EtFakeCcd::Command::UploadDocumentsToCaseCommand.from_json json
-                      else
-                        r.halt 400, unknown_event_error_for(r)
-                      end
-            if command.valid?
-              ::EtFakeCcd::DataStoreService.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
-              case_updated_response(cid, uid, jid, ctid)
-            else
-              r.halt 422, render_error_for(command, r)
-            end
-
           end
         end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
           r.post do
-            if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              r.halt 403, forbidden_error_for(r)
-              break
-            end
-            json = JSON.parse(r.body.read)
-            next if force_deliberate_error(json, r)
+            with_forced_error_handling(r, stage: :data) do
+              if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                r.halt 403, forbidden_error_for(r)
+                break
+              end
+              json = JSON.parse(r.body.read)
+              next if force_deliberate_error(json, r)
 
-            command = case json.dig('event', 'id')
-            when 'initiateCase' then ::EtFakeCcd::Command::CreateCaseCommand.from_json json
-                      when 'createMultiple' then ::EtFakeCcd::Command::CreateMultipleCaseCommand.from_json json
-                      else
-                        r.halt 400, unknown_event_error_for(r)
-                      end
-            if command.valid?
-              id = ::EtFakeCcd::DataStoreService.store_case_data(command.data, jid: jid, ctid: ctid)
-              case_created_response(id, uid, jid, ctid)
-            else
-              r.halt 422, render_error_for(command, r)
+              command = case json.dig('event', 'id')
+              when 'initiateCase' then ::EtFakeCcd::Command::CreateCaseCommand.from_json json
+                        when 'createMultiple' then ::EtFakeCcd::Command::CreateMultipleCaseCommand.from_json json
+                        else
+                          r.halt 400, unknown_event_error_for(r)
+                        end
+              if command.valid?
+                id = ::EtFakeCcd::DataStoreService.store_case_data(command.data, jid: jid, ctid: ctid)
+                case_created_response(id, uid, jid, ctid)
+              else
+                r.halt 422, render_error_for(command, r)
+              end
             end
           end
 
           r.get do
-            if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
-              r.halt 403, forbidden_error_for(r)
-              break
+            with_forced_error_handling(r, stage: :data) do
+              if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+                r.halt 403, forbidden_error_for(r)
+                break
+              end
+              filters = r.params.dup
+              page = (filters.delete('page') || "1").to_i
+              sort_direction = filters.delete('sortDirection') || 'asc'
+              list = DataStoreService.list(jid: jid, ctid: ctid, filters: filters, page: page, sort_direction: sort_direction, page_size: 25)
+              cases_response(list, uid, jid, ctid)
             end
-            filters = r.params.dup
-            page = (filters.delete('page') || "1").to_i
-            sort_direction = filters.delete('sortDirection') || 'asc'
-            list = DataStoreService.list(jid: jid, ctid: ctid, filters: filters, page: page, sort_direction: sort_direction, page_size: 25)
-            cases_response(list, uid, jid, ctid)
           end
         end
       end
