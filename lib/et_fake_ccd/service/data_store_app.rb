@@ -67,6 +67,16 @@ module EtFakeCcd
             end
           end
         end
+        r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases", String do |uid, jid, ctid, case_id|
+          with_forced_error_handling(r, stage: :data) do
+            if !EtFakeCcd::AuthService.validate_service_token(r.headers['ServiceAuthorization'].gsub(/\ABearer /, '')) || !EtFakeCcd::AuthService.validate_user_token(r.headers['Authorization'].gsub(/\ABearer /, ''))
+              r.halt 403, forbidden_error_for(r)
+              break
+            end
+            case_response(case_id, uid, jid, ctid)
+          end
+
+        end
         r.is "caseworkers", String, "jurisdictions", String, "case-types", String, "cases" do |uid, jid, ctid|
           r.post do
             with_forced_error_handling(r, stage: :data) do
@@ -251,6 +261,11 @@ module EtFakeCcd
       end
 
       def case_updated_response(id, uid, jid, ctid)
+        j = case_hash(ctid, id, jid)
+        JSON.generate(j)
+      end
+
+      def case_response(id, uid, jid, ctid)
         j = case_hash(ctid, id, jid)
         JSON.generate(j)
       end
