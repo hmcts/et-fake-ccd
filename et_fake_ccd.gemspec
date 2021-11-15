@@ -24,6 +24,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'roda', '~> 3.21'
+  spec.add_dependency 'roda-enhanced_logger', '~> 0.4.0'
+
   spec.add_dependency 'thor', '~> 1.0'
   spec.add_dependency 'activemodel', '>= 5.2.3'
   spec.add_dependency 'rotp', '~> 6.2'

@@ -10,6 +10,7 @@ require "et_fake_ccd/service/ecm_app"
 module EtFakeCcd
   class RootApp < Roda
     plugin :multi_run
+    plugin :enhanced_logger
     run "idam", Service::SidamApp
     run "auth", Service::AuthApp
     run "data_store", Service::DataStoreApp
