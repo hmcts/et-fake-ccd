@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    et_fake_ccd (1.1.10)
-      activemodel (>= 5.2.3)
+    et_fake_ccd (1.1.11)
+      activemodel (~> 6.1)
       iodine (~> 0.7)
       json-schema (~> 2.5)
       roda (~> 3.21)
@@ -14,9 +14,9 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.4.1)
-      activesupport (= 6.1.4.1)
-    activesupport (6.1.4.1)
+    activemodel (6.1.4.4)
+      activesupport (= 6.1.4.4)
+    activesupport (6.1.4.4)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -28,16 +28,16 @@ GEM
     diff-lcs (1.4.4)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
-    iodine (0.7.44)
+    iodine (0.7.45)
     json-schema (2.8.1)
       addressable (>= 2.4)
-    minitest (5.14.4)
+    minitest (5.15.0)
     pastel (0.8.0)
       tty-color (~> 0.5)
     public_suffix (4.0.6)
     rack (2.2.3)
     rake (13.0.6)
-    roda (3.50.0)
+    roda (3.51.0)
       rack
     roda-enhanced_logger (0.4.0)
       roda (>= 3.19.0)
@@ -56,14 +56,14 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.3)
-    thor (1.1.0)
+    thor (1.2.1)
     tilt (2.0.10)
     tty-color (0.6.0)
     tty-logger (0.6.0)
       pastel (~> 0.8)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    zeitwerk (2.5.1)
+    zeitwerk (2.5.3)
 
 PLATFORMS
   ruby
