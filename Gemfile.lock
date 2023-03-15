@@ -34,7 +34,7 @@ GEM
     pastel (0.8.0)
       tty-color (~> 0.5)
     public_suffix (5.0.1)
-    rack (3.0.2)
+    rack (3.0.6.1)
     rake (13.0.6)
     roda (3.63.0)
       rack
