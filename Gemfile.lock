@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    et_fake_ccd (2.1.0)
+    et_fake_ccd (3.0.0.pre.rc1)
       activemodel (~> 7.0)
       iodine (~> 0.7)
       json-schema (~> 3.0)
