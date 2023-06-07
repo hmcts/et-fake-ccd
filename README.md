@@ -76,24 +76,24 @@ So, here is a list of deliberate errors that Im sure will increase in size :-
 
 #### Force a 403 error every time
 
-* Use the lead claimant name "Force Error403"
+* Use the lead claimant name "Force ErrorForbidden-<n>" (replace <n> with a number unique to your test)
 
 #### Force a 403 error for just the first time
 
-* Use the lead claimant name "Force Error403-<n>" (replace <n> with a number unique to your test)
+* Use the lead claimant name "Force ErrorForbidden-<n>" (replace <n> with a number unique to your test)
 
 #### Force a 504 error
-* Use the lead claimant name "Force Error504"
+* Use the lead claimant name "Force ErrorGatewayTimeout-<n>" (replace <n> with a number unique to your test)
 * Use the lead claimant title of "Mr" to only force the error on the first occurence
 * Use the lead claimant title of "Mrs" to force the error on every occurence
 
 #### Force a 502 error
-* Use the lead claimant name "Force Error502"
+* Use the lead claimant name "Force ErrorBadGateway-<n>" (replace <n> with a number unique to your test)
 * Use the lead claimant title of "Mr" to only force the error on the first occurence
 * Use the lead claimant title of "Mrs" to force the error on every occurence
 
 #### Force a 422 error
-* Use the lead claimant name "Force Error422"
+* Use the lead claimant name "Force ErrorUnprocessableEntity-<n>" (replace <n> with a number unique to your test)
 * Use the lead claimant title of "Mr" to only force the error on the first occurence
 * Use the lead claimant title of "Mrs" to force the error on every occurence
 
