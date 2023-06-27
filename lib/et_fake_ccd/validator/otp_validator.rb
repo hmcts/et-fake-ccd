@@ -2,9 +2,10 @@ require 'rotp'
 module EtFakeCcd
   module Validator
     class OtpValidator < ActiveModel::EachValidator
-      def initialize(secret: ::EtFakeCcd.config.microservice_secret, **args)
+      def initialize(options = {})
+        secret = options[:secret] || ::EtFakeCcd.config.microservice_secret
         self.otp = ROTP::TOTP.new(secret)
-        super
+        super(options.except(:secret))
       end
 
       def validate_each(record, attribute, value)
