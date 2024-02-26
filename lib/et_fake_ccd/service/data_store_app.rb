@@ -96,12 +96,8 @@ module EtFakeCcd
                           r.halt 400, unknown_event_error_for(r)
                         end
               if command.valid?
-                id_or_errors = catch(:invalid) { ::EtFakeCcd::DataStoreService.store_case_data(command.data, jid: jid, ctid: ctid) }
-                if id_or_errors.is_a?(Array) && id_or_errors.find {|err| err[:field] == 'data.feeGroupReference' && err[:error] == :duplicate}.present?
-                  r.halt 409, render_error_conflict(r)
-                else
-                  case_created_response(id_or_errors, uid, jid, ctid)
-                end
+                id = ::EtFakeCcd::DataStoreService.store_case_data(command.data, jid: jid, ctid: ctid)
+                case_created_response(id, uid, jid, ctid)
               else
                 r.halt 422, render_error_for(command, r)
               end
@@ -166,11 +162,6 @@ module EtFakeCcd
       def render_error_bad_gateway(r)
         j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":502,"error":"Forbidden","message":"Access Denied","path": r.path}
         r.halt 502, JSON.generate(j)
-      end
-
-      def render_error_conflict(r)
-        j = {"timestamp":"2019-07-01T07:46:35.405+0000","status":409,"error":"Conflict","message":"409 Conflict","path": r.path}
-        r.halt 409, JSON.generate(j)
       end
 
       def render_error_unprocessable_entity(r)

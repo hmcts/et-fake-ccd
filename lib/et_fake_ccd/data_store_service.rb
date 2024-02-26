@@ -45,9 +45,6 @@ module EtFakeCcd
       end
 
       def store(json, jid:, ctid:)
-        errors = validate(json, jid: jid, ctid: ctid)
-        throw :invalid, errors unless errors.empty?
-
         self.id = id + 1
         if ctid =~ /Multiples/
           primary_case_ref = json.dig('data', 'caseIdCollection').first.dig('value', 'ethos_CaseReference')
@@ -63,13 +60,6 @@ module EtFakeCcd
 
       def fetch_by_id(id, jid:, ctid:)
         data.dig(jid, ctid, id.to_s)
-      end
-
-      def fetch_by_fee_group_reference(reference, jid:, ctid:)
-        cases = data.dig(jid, ctid)
-        return nil if cases.nil? || cases.empty?
-
-        cases.find { |_, case_data| case_data.dig('data', 'feeGroupReference') == reference}&.last
       end
 
       def fetch_all(jid:, ctid:, filters: {}, page: 1, sort_direction: 'asc', page_size: 25)
@@ -131,14 +121,6 @@ module EtFakeCcd
         arr.to_h
       end
 
-      def validate(json, jid:, ctid:)
-        fee_group_reference = json.dig('data', 'feeGroupReference')
-        return [] if fee_group_reference.nil? || fee_group_reference.empty?
-
-        return [{ field: 'data.feeGroupReference', error: :duplicate }] if fetch_by_fee_group_reference(fee_group_reference, jid: jid, ctid: ctid)
-
-        []
-      end
     end
   end
 end
