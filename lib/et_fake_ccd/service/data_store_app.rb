@@ -9,6 +9,7 @@ module EtFakeCcd
   module Service
     class DataStoreApp < Roda
       include ForcedErrorHandling
+      attr_accessor :success_response
       plugin :request_headers
       plugin :halt
       route do |r|
@@ -88,6 +89,7 @@ module EtFakeCcd
               end
               json = JSON.parse(r.body.read)
               next if force_deliberate_error(json, r)
+              next if force_deliberate_sequence(json, r)
 
               command = case json.dig('event', 'id')
               when 'initiateCase' then ::EtFakeCcd::Command::CreateCaseCommand.from_json json
@@ -97,7 +99,11 @@ module EtFakeCcd
                         end
               if command.valid?
                 id = ::EtFakeCcd::DataStoreService.store_case_data(command.data, jid: jid, ctid: ctid)
-                case_created_response(id, uid, jid, ctid)
+                if success_response
+                  r.halt *success_response
+                else
+                  case_created_response(id, uid, jid, ctid)
+                end
               else
                 r.halt 422, render_error_for(command, r)
               end
@@ -132,6 +138,35 @@ module EtFakeCcd
           return false unless should_error_for_request_id?("#{error}-#{client_id}")
           render_error(error, r)
         end
+        true
+      end
+
+      def force_deliberate_sequence(data, r)
+        address_line_2 = data.dig('data', 'claimantType', 'claimant_addressUK', 'AddressLine2')&.strip&.downcase
+        return false unless address_line_2&.starts_with? 'force-error-sequence'
+
+        request_id = JSON.dump(data['data']).hash
+        track_request_id(request_id)
+        sequences = address_line_2.split(' ')
+        sequences.shift
+
+        request_index = RequestStoreService.count(request_id) - 1
+        error = sequences[request_index]
+        error ||= sequences.last
+
+        method_name = "sequence_#{error}".to_sym
+        return send(method_name, data, r) if respond_to?(method_name, true)
+
+        false
+      end
+
+      def sequence_success_with_timeout(data, r)
+        self.success_response = [504, JSON.generate({ "message": "Proxy Timeout" })]
+        false
+      end
+
+      def sequence_conflict(data, r)
+        r.halt 409, JSON.generate({ "message": "Conflict" })
         true
       end
 
