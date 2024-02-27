@@ -143,7 +143,7 @@ module EtFakeCcd
 
       def force_deliberate_sequence(data, r)
         address_line_2 = data.dig('data', 'claimantType', 'claimant_addressUK', 'AddressLine2')&.strip&.downcase
-        return false unless address_line_2&.start_with? 'force-error-sequence'
+        return false unless address_line_2&.start_with? 'ForceErrorSequence'
 
         request_id = JSON.dump(data['data']).hash
         track_request_id(request_id)
@@ -153,6 +153,7 @@ module EtFakeCcd
         request_index = RequestStoreService.count(request_id) - 1
         error = sequences[request_index]
         error ||= sequences.last
+        error = error.gsub(/([a-z\d])([A-Z])/, '\1_\2').gsub(/([A-Z]+)([A-Z][a-z\d])/, '\1_\2').downcase
 
         method_name = "sequence_#{error}".to_sym
         return send(method_name, data, r) if respond_to?(method_name, true)
