@@ -1,5 +1,6 @@
 require "thor"
-require "et_fake_ccd/iodine"
+require 'puma'
+require 'puma/configuration'
 module EtFakeCcd
   module Cli
     class Root < Thor
@@ -20,7 +21,13 @@ module EtFakeCcd
         ::EtFakeCcd.config do |c|
           c.create_case_schema_file = options.create_case_schema
         end
-        Rack::Server.start app: EtFakeCcd::RootApp, Port: options.port, server: 'iodine'
+        conf = Puma::Configuration.new do |user_config|
+          user_config.threads 1, 1
+          user_config.workers 1
+          user_config.port EtFakeCcd.config.port
+          user_config.app { EtFakeCcd::RootApp }
+        end
+        Puma::Launcher.new(conf, log_writer: Puma::LogWriter.stdio).run
       end
     end
   end

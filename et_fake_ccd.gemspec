@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activemodel', '~> 7.0'
   spec.add_dependency 'rotp', '~> 6.2'
   spec.add_dependency 'tilt', '~> 2.0', '>= 2.0.9'
-  spec.add_dependency 'iodine', '~> 0.7'
+  spec.add_dependency 'puma', '~> 6.4'
   spec.add_dependency 'json-schema', '~> 4.1.1'
 
   spec.add_development_dependency "bundler", "~> 2.0"
