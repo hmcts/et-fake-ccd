@@ -24,8 +24,8 @@ module EtFakeCcd
         conf = Puma::Configuration.new do |user_config|
           user_config.threads 1, 1
           user_config.workers 1
-          user_config.port EtFakeCcd.config.port
-          user_config.app { EtFakeCcd::RootApp }
+          user_config.port options.port
+          user_config.app EtFakeCcd::RootApp
         end
         Puma::Launcher.new(conf, log_writer: Puma::LogWriter.stdio).run
       end
