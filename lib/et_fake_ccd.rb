@@ -1,4 +1,5 @@
 require "et_fake_ccd/version"
+require "et_fake_ccd/logger_proxy"
 require "et_fake_ccd/config"
 require "et_fake_ccd/root_app"
 require "et_fake_ccd/service/sidam_app"
@@ -13,4 +14,3 @@ module EtFakeCcd
     end
   end
 end
-

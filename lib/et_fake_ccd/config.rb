@@ -7,6 +7,8 @@ module EtFakeCcd
     attr_accessor :microservice, :microservice_secret, :valid_credentials, :oauth2_client_id, :oauth2_redirect_url
     attr_accessor :file_storage_path
     attr_accessor :create_case_schema_file
+    attr_accessor :logger
+    attr_accessor :logger_method
   end
 
   Config.instance.tap do |c|
@@ -19,6 +21,8 @@ module EtFakeCcd
     c.oauth2_client_id = "ccd_gateway"
     c.oauth2_redirect_url = "http://localhost:3451/oauth2redirect" # The contents of this at the moment are not important
     c.file_storage_path = File.join Dir.pwd, 'tmp', 'file_storage'
+    c.logger = Logger.new(STDOUT)
+    c.logger_method = :info
     FileUtils.mkdir_p(c.file_storage_path)
   end
 end
