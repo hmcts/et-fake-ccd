@@ -18,8 +18,8 @@ module EtFakeCcd
       instance.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
     end
 
-    def self.total_count(jid:, ctid:)
-      instance.total_count(jid: jid, ctid: ctid)
+    def self.total_count(jid:, ctid:, filters: {})
+      instance.total_count(jid: jid, ctid: ctid, filters:)
     end
 
     def self.case_types(jid:)
@@ -43,8 +43,8 @@ module EtFakeCcd
       adapter.fetch_all(jid: jid, ctid: ctid, filters: filters, page: page, sort_direction: sort_direction, page_size: page_size)
     end
 
-    def total_count(jid:, ctid:)
-      adapter.total_count(jid: jid, ctid: ctid)
+    def total_count(jid:, ctid:, filters: {})
+      adapter.total_count(jid: jid, ctid: ctid, filters: filters)
     end
 
     def case_types(jid:)
@@ -94,8 +94,11 @@ module EtFakeCcd
         existing['data'].merge!(json['data'])
       end
 
-      def total_count(jid:, ctid:)
-        data.dig(jid, ctid)&.size || 0
+      def total_count(jid:, ctid:, filters: {})
+        cases = data.dig(jid, ctid)
+        return 0 if cases.nil? || cases.empty?
+
+        filter(cases, filters: filters).size
       end
 
       def case_types(jid:)

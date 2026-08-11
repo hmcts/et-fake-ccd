@@ -8,7 +8,7 @@ module EtFakeCcd
     class UiApp < Roda
       plugin :request_headers
       plugin :halt
-      plugin :render, layout: 'layout.html'
+      plugin :render, layout: 'layout.html', cache: false
       plugin :partials
       route do |r|
         r.root do
@@ -24,7 +24,7 @@ module EtFakeCcd
           ctid = filters.delete('ctid') || 'Glasgow_Dev'
           filters.delete_if { |k, v| v.nil? || v.empty? }
           list = DataStoreService.list(jid:, ctid:, filters: filters, page:, sort_direction: sort_direction, page_size:)
-          total_pages = (DataStoreService.total_count(jid:, ctid:) / page_size.to_f).ceil
+          total_pages = (DataStoreService.total_count(jid:, ctid:, filters:) / page_size.to_f).ceil
           case_types = DataStoreService.case_types(jid:)
 
           view("cases.html", locals: {
