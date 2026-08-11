@@ -1,5 +1,6 @@
 require 'roda'
 require 'json'
+require 'rack/utils'
 require 'et_fake_ccd/commands'
 require 'et_fake_ccd/data_store_service'
 module EtFakeCcd
@@ -35,6 +36,7 @@ module EtFakeCcd
             page:,
             total_pages:,
             filters:,
+            pagination_query: pagination_query(jid:, ctid:, sort_direction:, filters:),
             pagination_items: pagination_items(page:, total_pages:)
           })
         end
@@ -64,6 +66,15 @@ module EtFakeCcd
       end
 
       private
+
+      def pagination_query(jid:, ctid:, sort_direction:, filters:)
+        params = filters.merge(
+          'jid' => jid,
+          'ctid' => ctid,
+          'sortDirection' => sort_direction
+        )
+        Rack::Utils.escape_html(Rack::Utils.build_query(params))
+      end
 
       def pagination_items(page:, total_pages:)
         return (1..total_pages).to_a if total_pages <= 7
