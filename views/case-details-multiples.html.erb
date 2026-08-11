@@ -1,0 +1,42 @@
+<h2 class="govuk-heading-l">Multiple Name: <%= case_data.dig('data', 'multipleName') %></h2>
+<h2 class="govuk-heading-l">Multiple Number: <%= case_data.dig('data', 'multipleReference') %></h2>
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <h2 class="govuk-tabs__title">
+    Contents
+  </h2>
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <a class="govuk-tabs__tab" href="#multiple-cases">
+        Multiple Cases
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#json">
+        Raw JSON
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="multiple-cases">
+    <h2 class="govuk-heading-l">Case Status: Open Multiple Cases</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Source</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'multipleSource') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Number of cases</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'caseIdCollection').length %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Lead Case</td>
+        <td class="govuk-table__cell"><a href="/ui/cases/case-details/<%= jid %>/<%= ctid.gsub(/_Multiples/, '') %>/<%= lead_case_id %>"><%= lead_case.dig('data', 'ethosCaseReference') %></a></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="json">
+    <h2 class="govuk-heading-l">Raw JSON</h2>
+    <code><%= JSON.pretty_generate(case_data, indent: '&nbsp;&nbsp;', space: '&nbsp;',  array_nl: "<br />", object_nl: "<br />") %></code>
+  </div>
+</div>

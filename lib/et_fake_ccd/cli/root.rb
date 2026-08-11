@@ -23,7 +23,7 @@ module EtFakeCcd
         end
         conf = Puma::Configuration.new do |user_config|
           user_config.threads 1, 1
-          user_config.workers 1
+          user_config.workers 0
           user_config.port options.port
           user_config.app EtFakeCcd::RootApp
         end
