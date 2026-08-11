@@ -1,0 +1,5 @@
+.app-width-container {
+  max-width: 1400px;
+  margin-left: max(20px, calc((100% - 1400px) / 2));
+  margin-right: max(20px, calc((100% - 1400px) / 2));
+}

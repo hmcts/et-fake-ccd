@@ -1,0 +1,97 @@
+<link rel="stylesheet" href="/stylesheets/cases.css">
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-quarter-from-desktop">
+    <form method="get">
+      <button type="submit" class="govuk-button" data-module="govuk-button">
+        Apply
+      </button>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="jid">
+          Jurisdiction
+        </label>
+        <select class="govuk-select" id="jid" name="jid">
+          <option value="EMPLOYMENT">Employment</option>
+        </select>
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="ctid">
+          Case type
+        </label>
+        <select class="govuk-select" id="ctid" name="ctid">
+          <% case_types.each do |case_type_id| %>
+            <option value="<%= case_type_id %>" <%= 'selected="selected"' if ctid == case_type_id%>><%= case_type_id %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="jid">
+          Multiple Reference
+        </label>
+        <input type="text" id="multiple_reference" name="data.multipleReference" class="govuk-input" value="<%= filters['data.multipleReference'] %>" />
+      </div>
+
+    </form>
+  </div>
+  <div class="govuk-grid-column-three-quarters-from-desktop">
+    <table class="govuk-table govuk-table--small-text-until-tablet">
+      <caption class="govuk-table__caption govuk-table__caption--m">Case list</caption>
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Case Number</th>
+        <th scope="col" class="govuk-table__header">Receipt Date</th>
+        <th scope="col" class="govuk-table__header">Submission Reference</th>
+        <th scope="col" class="govuk-table__header">Claimant</th>
+        <th scope="col" class="govuk-table__header">Respondent</th>
+        <th scope="col" class="govuk-table__header">Physical location</th>
+      </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      <% cases.each_pair do |ref, data| %>
+        <tr class="govuk-table__row">
+          <th scope="row" class="govuk-table__header"><a href="/ui/cases/case-details/<%= jid %>/<%= ctid %>/<%= ref %>"><%= data.dig('data', 'ethosCaseReference') || data.dig('data', 'multipleReference') %></a></th>
+          <td class="govuk-table__cell"><%= data.dig('data', 'receiptDate') %></td>
+          <td class="govuk-table__cell"><%= data.dig('data', 'feeGroupReference') %></td>
+          <td class="govuk-table__cell"><%= data.dig('data', 'claimantIndType', 'claimant_first_names') %> <%= data.dig('data', 'claimantIndType', 'claimant_last_name') %></td>
+          <td class="govuk-table__cell"><%= data.dig('data', 'respondentCollection')&.first&.dig('value', 'respondent_name') %></td>
+          <td class="govuk-table__cell">N/A</td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <% if total_pages > 1 %>
+      <nav class="govuk-pagination" aria-label="Pagination">
+        <% if page > 1 %>
+          <div class="govuk-pagination__prev">
+            <a class="govuk-link govuk-pagination__link" href="/ui/cases?<%= pagination_query %>&amp;page=<%= page - 1 %>" rel="prev">
+              <span class="govuk-pagination__link-title">Previous<span class="govuk-visually-hidden"> page</span></span>
+            </a>
+          </div>
+        <% end %>
+
+        <ul class="govuk-pagination__list">
+          <% pagination_items.each do |item| %>
+            <% if item == :ellipsis %>
+              <li class="govuk-pagination__item govuk-pagination__item--ellipses">&ctdot;</li>
+            <% else %>
+              <li class="govuk-pagination__item<%= ' govuk-pagination__item--current' if item == page %>">
+                <a class="govuk-link govuk-pagination__link"
+                   href="/ui/cases?<%= pagination_query %>&amp;page=<%= item %>"
+                   aria-label="Page <%= item %>"
+                   <%= 'aria-current="page"' if item == page %>><%= item %></a>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+
+        <% if page < total_pages %>
+          <div class="govuk-pagination__next">
+            <a class="govuk-link govuk-pagination__link" href="/ui/cases?<%= pagination_query %>&amp;page=<%= page + 1 %>" rel="next">
+              <span class="govuk-pagination__link-title">Next<span class="govuk-visually-hidden"> page</span></span>
+            </a>
+          </div>
+        <% end %>
+      </nav>
+    <% end %>
+  </div>
+</div>

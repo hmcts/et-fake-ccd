@@ -1,6 +1,7 @@
 require "thor"
 require 'puma'
 require 'puma/configuration'
+require 'rack/reloader'
 module EtFakeCcd
   module Cli
     class Root < Thor
@@ -23,9 +24,9 @@ module EtFakeCcd
         end
         conf = Puma::Configuration.new do |user_config|
           user_config.threads 1, 1
-          user_config.workers 1
+          user_config.workers 0
           user_config.port options.port
-          user_config.app EtFakeCcd::RootApp
+          user_config.app Rack::Reloader.new(EtFakeCcd::RootApp, 0)
         end
         Puma::Launcher.new(conf, log_writer: Puma::LogWriter.stdio).run
       end

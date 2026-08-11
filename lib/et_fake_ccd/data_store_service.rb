@@ -18,6 +18,15 @@ module EtFakeCcd
       instance.update_case_data(json, jid: jid, ctid: ctid, cid: cid)
     end
 
+    def self.total_count(jid:, ctid:, filters: {})
+      instance.total_count(jid: jid, ctid: ctid, filters:)
+    end
+
+    def self.case_types(jid:)
+      instance.case_types(jid:)
+    end
+
+
     def store_case_data(json, jid:, ctid:)
       adapter.store(json, jid: jid, ctid: ctid)
     end
@@ -33,6 +42,15 @@ module EtFakeCcd
     def list(jid:, ctid:, filters: {}, page: 1, sort_direction: 'asc', page_size: 25)
       adapter.fetch_all(jid: jid, ctid: ctid, filters: filters, page: page, sort_direction: sort_direction, page_size: page_size)
     end
+
+    def total_count(jid:, ctid:, filters: {})
+      adapter.total_count(jid: jid, ctid: ctid, filters: filters)
+    end
+
+    def case_types(jid:)
+      adapter.case_types(jid:)
+    end
+
 
     def adapter
       @adapter ||= InMemoryAdapter.new
@@ -74,6 +92,17 @@ module EtFakeCcd
       def update_case_data(json, jid:, ctid:, cid:)
         existing = fetch_by_id(cid.to_s, jid: jid, ctid: ctid)
         existing['data'].merge!(json['data'])
+      end
+
+      def total_count(jid:, ctid:, filters: {})
+        cases = data.dig(jid, ctid)
+        return 0 if cases.nil? || cases.empty?
+
+        filter(cases, filters: filters).size
+      end
+
+      def case_types(jid:)
+        data.dig(jid)&.keys || []
       end
 
       private
@@ -122,5 +151,6 @@ module EtFakeCcd
       end
 
     end
+
   end
 end

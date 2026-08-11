@@ -1,0 +1,272 @@
+<h2 class="govuk-heading-l">Case number: <%= case_data.dig('data', 'ethosCaseReference') %></h2>
+<h2 class="govuk-heading-l"><%= case_data.dig('data', 'claimantIndType', 'claimant_first_names') %> <%= case_data.dig('data', 'claimantIndType', 'claimant_last_name') %> v <%= case_data.dig('data', 'respondentCollection')&.first&.dig('value', 'respondent_name') %></h2>
+<div class="govuk-tabs" data-module="govuk-tabs">
+  <h2 class="govuk-tabs__title">
+    Contents
+  </h2>
+  <ul class="govuk-tabs__list">
+    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+      <a class="govuk-tabs__tab" href="#case-details">
+        Case Details
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#claimant">
+        Claimant
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#representative">
+        Claimant Representative
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#respondent">
+        Respondent
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#documents">
+        Documents
+      </a>
+    </li>
+    <li class="govuk-tabs__list-item">
+      <a class="govuk-tabs__tab" href="#json">
+        Raw JSON
+      </a>
+    </li>
+  </ul>
+  <div class="govuk-tabs__panel" id="case-details">
+    <h2 class="govuk-heading-l">Case Details</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Claimant </td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_first_names') %> <%= case_data.dig('data', 'claimantIndType', 'claimant_last_name') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Respondent</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'respondentCollection')&.first&.dig('value', 'respondent_name') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Single or Multiple</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'caseType') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Submission Reference</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'feeGroupReference') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Date of Receipt</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'receiptDate') %></td>
+      </tr>
+      <% if case_data.dig('data', 'caseType') == 'Multiple' %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell" colspan="2"><h3>Multiple reference: <%= case_data.dig('data', 'multipleReference') %></h3></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Lead claimant</td>
+          <td class="govuk-table__cell"><%= case_data.dig('data', 'leadClaimant') %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="claimant">
+    <h2 class="govuk-heading-l">Claimant Details</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Title</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_title1') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Other title</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_title_other') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">First name</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_first_names') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Last name</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_last_name') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Date of birth</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_date_of_birth') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Gender</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantIndType', 'claimant_gender') %></td>
+      </tr>
+      </tbody>
+    </table>
+    <h2 class="govuk-heading-l">Address</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Building and Street</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantType', 'claimant_addressUK', 'AddressLine1') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Address Line 2</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantType', 'claimant_addressUK', 'AddressLine2') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Town or City</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantType', 'claimant_addressUK', 'PostTown') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Postcode/Zipcode</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantType', 'claimant_addressUK', 'PostCode') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Country</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantType', 'claimant_addressUK', 'Country') %></td>
+      </tr>
+      </tbody>
+    </table>
+    <h2 class="govuk-heading-l">Other details</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Occupation</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantOtherType', 'claimant_occupation') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Employed from</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'claimantOtherType', 'claimant_employed_from') %></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="representative">
+    <h2 class="govuk-heading-l">Claimant Representative Details</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Name of Representative</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'name_of_representative') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Name of Organisation</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'name_of_organisation') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Reference</td>
+        <td class="govuk-table__cell">UNKNOWN</td>
+      </tr>
+      </tbody>
+    </table>
+    <h2 class="govuk-heading-l">Address</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Building and Street</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'representative_address', 'AddressLine1') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Address Line 2</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'representative_address', 'AddressLine2') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Town or City</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'representative_address', 'PostTown') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Postcode/Zipcode</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'representative_address', 'PostCode') %></td>
+      </tr>
+      </tbody>
+    </table>
+    <h2 class="govuk-heading-l">Contact</h2>
+    <table class="govuk-table">
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Phone number</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'representative_phone_number') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Email address</td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'representativeClaimantType', 'representative_email_address') %></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <td class="govuk-table__cell">Contact preference</td>
+        <td class="govuk-table__cell">UNKNOWN</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="respondent">
+    <h2 class="govuk-heading-l">Respondents</h2>
+    <% Array(case_data.dig('data', 'respondentCollection')).each do |respondent| %>
+      <table class="govuk-table">
+        <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Name of respondent</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_name') %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Is there an ACAS Certificate number?</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_ACAS_question') %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">ACAS Certificate Number</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_ACAS') %></td>
+        </tr>
+        </tbody>
+      </table>
+      <table class="govuk-table">
+        <h2 class="govuk-heading-m">Respondent Address</h2>
+        <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Building and Street</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_address', 'AddressLine1') %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Address Line 2</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_address', 'AddressLine2') %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Town or City</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_address', 'PostTown') %></td>
+        </tr>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell">Postcode/Zipcode</td>
+          <td class="govuk-table__cell"><%= respondent.dig('value', 'respondent_address', 'PostCode') %></td>
+        </tr>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="documents">
+    <h2 class="govuk-heading-l">Case documentation</h2>
+    <table class="govuk-table">
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Number</th>
+        <th scope="col" class="govuk-table__header">Document</th>
+        <th scope="col" class="govuk-table__header">Document Category</th>
+        <th scope="col" class="govuk-table__header">Type of Document</th>
+        <th scope="col" class="govuk-table__header">Date of Correspondence</th>
+      </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      <% Array(case_data.dig('data', 'documentCollection')).each_with_index do |document, idx| %>
+        <tr class="govuk-table__row">
+          <td class="govuk-table__cell"><%= idx + 1 %></td>
+          <td class="govuk-table__cell"><a href="<%= document.dig('value', 'uploadedDocument', 'document_binary_url') %>" download="<%= document.dig('value', 'uploadedDocument', 'document_filename') %>"><%= document.dig('value', 'uploadedDocument', 'document_filename') %></a></td>
+          <td class="govuk-table__cell"></td>
+          <td class="govuk-table__cell"><%= document.dig('value', 'typeOfDocument') %></td>
+          <td class="govuk-table__cell"><%= document.dig('value', 'dateOfCorrespondence') %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="json">
+    <h2 class="govuk-heading-l">Raw JSON</h2>
+    <pre><code><%= Rack::Utils.escape_html(JSON.pretty_generate(case_data)) %></code></pre>
+  </div>
+</div>
