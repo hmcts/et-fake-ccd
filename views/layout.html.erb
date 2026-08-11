@@ -66,9 +66,14 @@
             Menu
           </button>
           <ul class="govuk-service-navigation__list" id="navigation">
-            <li class="govuk-service-navigation__item">
-              <a class="govuk-service-navigation__link" href="/ui/cases">
-                Case list
+            <% case_list_active = request.path.start_with?('/ui/cases') %>
+            <li class="govuk-service-navigation__item<%= ' govuk-service-navigation__item--active' if case_list_active %>">
+              <a class="govuk-service-navigation__link" href="/ui/cases" <%= 'aria-current="page"' if case_list_active %>>
+                <% if case_list_active %>
+                  <strong class="govuk-service-navigation__active-fallback">Case list</strong>
+                <% else %>
+                  Case list
+                <% end %>
               </a>
             </li>
           </ul>
