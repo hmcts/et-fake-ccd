@@ -43,6 +43,11 @@ module EtFakeCcd
 
         r.is "cases/case-details", String, String, String do |jid, ctid, case_id|
           case_data = DataStoreService.find_case_data_by_id(case_id, jid:, ctid:)
+          unless case_data
+            response.status = 404
+            next view("case-not-found.html", locals: {case_id:})
+          end
+
           if ctid =~ /_Multiples/
             lead_cases = DataStoreService.list(jid:, ctid: ctid.gsub(/_Multiples/, ''), filters: {'data.multipleReference' => case_data&.dig('data', 'multipleReference'), 'data.leadClaimant' => 'Yes', 'data.caseType' => 'Multiple'})
             view("case-details-multiples.html", locals: {
