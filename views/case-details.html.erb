@@ -1,5 +1,5 @@
-<h2 class="govuk-heading-l">Case number: <%= case_data.dig('ethosCaseReference') %></h2>
-<h2 class="govuk-heading-l"><%= case_data.dig('data', 'claimantIndType', 'claimant_first_names') %> <%= case_data.dig('data', 'claimantIndType', 'claimant_last_name') %> v <%= case_data.dig('data', 'respondentCollection').first.dig('value', 'respondent_name') %></h2>
+<h2 class="govuk-heading-l">Case number: <%= case_data.dig('data', 'ethosCaseReference') %></h2>
+<h2 class="govuk-heading-l"><%= case_data.dig('data', 'claimantIndType', 'claimant_first_names') %> <%= case_data.dig('data', 'claimantIndType', 'claimant_last_name') %> v <%= case_data.dig('data', 'respondentCollection')&.first&.dig('value', 'respondent_name') %></h2>
 <div class="govuk-tabs" data-module="govuk-tabs">
   <h2 class="govuk-tabs__title">
     Contents
@@ -46,7 +46,7 @@
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">Respondent</td>
-        <td class="govuk-table__cell"><%= case_data.dig('data', 'respondentCollection').first.dig('value', 'respondent_name') %></td>
+        <td class="govuk-table__cell"><%= case_data.dig('data', 'respondentCollection')&.first&.dig('value', 'respondent_name') %></td>
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">Single or Multiple</td>
@@ -200,7 +200,7 @@
   </div>
   <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="respondent">
     <h2 class="govuk-heading-l">Respondents</h2>
-    <% case_data.dig('data', 'respondentCollection').each do |respondent| %>
+    <% Array(case_data.dig('data', 'respondentCollection')).each do |respondent| %>
       <table class="govuk-table">
         <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
@@ -253,7 +253,7 @@
       </tr>
       </thead>
       <tbody class="govuk-table__body">
-      <% case_data.dig('data', 'documentCollection').each_with_index do |document, idx| %>
+      <% Array(case_data.dig('data', 'documentCollection')).each_with_index do |document, idx| %>
         <tr class="govuk-table__row">
           <td class="govuk-table__cell"><%= idx + 1 %></td>
           <td class="govuk-table__cell"><a href="<%= document.dig('value', 'uploadedDocument', 'document_binary_url') %>" download="<%= document.dig('value', 'uploadedDocument', 'document_filename') %>"><%= document.dig('value', 'uploadedDocument', 'document_filename') %></a></td>

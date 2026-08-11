@@ -26,11 +26,17 @@
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">Number of cases</td>
-        <td class="govuk-table__cell"><%= case_data.dig('data', 'caseIdCollection').length %></td>
+        <td class="govuk-table__cell"><%= Array(case_data.dig('data', 'caseIdCollection')).length %></td>
       </tr>
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">Lead Case</td>
-        <td class="govuk-table__cell"><a href="/ui/cases/case-details/<%= jid %>/<%= ctid.gsub(/_Multiples/, '') %>/<%= lead_case_id %>"><%= lead_case.dig('data', 'ethosCaseReference') %></a></td>
+        <td class="govuk-table__cell">
+          <% if lead_case && lead_case_id %>
+            <a href="/ui/cases/case-details/<%= jid %>/<%= ctid.gsub(/_Multiples/, '') %>/<%= lead_case_id %>"><%= lead_case.dig('data', 'ethosCaseReference') %></a>
+          <% else %>
+            Not found
+          <% end %>
+        </td>
       </tr>
       </tbody>
     </table>

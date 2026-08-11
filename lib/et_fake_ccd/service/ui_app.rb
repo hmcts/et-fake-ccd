@@ -10,6 +10,10 @@ module EtFakeCcd
       plugin :render, layout: 'layout.html'
       plugin :partials
       route do |r|
+        r.root do
+          view("home.html")
+        end
+
         r.is "cases" do
           page_size = 25
           filters = r.params.dup
@@ -38,7 +42,7 @@ module EtFakeCcd
         r.is "cases/case-details", String, String, String do |jid, ctid, case_id|
           case_data = DataStoreService.find_case_data_by_id(case_id, jid:, ctid:)
           if ctid =~ /_Multiples/
-            lead_cases = DataStoreService.list(jid:, ctid: ctid.gsub(/_Multiples/, ''), filters: {'data.multipleReference' => case_data.dig('data', 'multipleReference'), 'data.leadClaimant' => 'Yes', 'data.caseType' => 'Multiple'})
+            lead_cases = DataStoreService.list(jid:, ctid: ctid.gsub(/_Multiples/, ''), filters: {'data.multipleReference' => case_data&.dig('data', 'multipleReference'), 'data.leadClaimant' => 'Yes', 'data.caseType' => 'Multiple'})
             view("case-details-multiples.html", locals: {
               jid:,
               ctid:,
