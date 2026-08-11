@@ -8,7 +8,10 @@ module EtFakeCcd
     class UiApp < Roda
       plugin :request_headers
       plugin :halt
-      plugin :render, layout: 'layout.html', cache: false
+      plugin :render,
+             views: File.expand_path('../../../views', __dir__),
+             layout: 'layout.html',
+             cache: false
       plugin :partials
       route do |r|
         r.root do
