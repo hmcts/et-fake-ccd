@@ -17,6 +17,7 @@ module EtFakeCcd
           sort_direction = filters.delete('sortDirection') || 'asc'
           jid = filters.delete('jid') || 'EMPLOYMENT'
           ctid = filters.delete('ctid') || 'Glasgow_Dev'
+          filters.delete_if { |k, v| v.nil? || v.empty? }
           list = DataStoreService.list(jid:, ctid:, filters: filters, page:, sort_direction: sort_direction, page_size:)
           total_pages = (DataStoreService.total_count(jid:, ctid:) / page_size.to_f).ceil
           case_types = DataStoreService.case_types(jid:)
@@ -29,6 +30,7 @@ module EtFakeCcd
             page_size:,
             page:,
             total_pages:,
+            filters:,
             pagination_items: pagination_items(page:, total_pages:)
           })
         end

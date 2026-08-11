@@ -1,5 +1,7 @@
+<link rel="stylesheet" href="/stylesheets/cases.css">
+
 <div class="govuk-grid-row">
-  <div class="govuk-grid-column-one-third">
+  <div class="govuk-grid-column-one-quarter-from-desktop">
     <form method="get">
       <button type="submit" class="govuk-button" data-module="govuk-button">
         Apply
@@ -22,9 +24,16 @@
           <% end %>
         </select>
       </div>
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="jid">
+          Multiple Reference
+        </label>
+        <input type="text" id="multiple_reference" name="data.multipleReference" class="govuk-input" value="<%= filters['data.multipleReference'] %>" />
+      </div>
+
     </form>
   </div>
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-three-quarters-from-desktop">
     <table class="govuk-table govuk-table--small-text-until-tablet">
       <caption class="govuk-table__caption govuk-table__caption--m">Case list</caption>
       <thead class="govuk-table__head">
