@@ -267,6 +267,6 @@
   </div>
   <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="json">
     <h2 class="govuk-heading-l">Raw JSON</h2>
-    <code><%= JSON.pretty_generate(case_data, indent: '&nbsp;&nbsp;', space: '&nbsp;',  array_nl: "<br />", object_nl: "<br />") %></code>
+    <pre><code><%= Rack::Utils.escape_html(JSON.pretty_generate(case_data)) %></code></pre>
   </div>
 </div>
