@@ -10,7 +10,7 @@ require "et_fake_ccd/service/ecm_app"
 require "et_fake_ccd/service/ui_app"
 module EtFakeCcd
   class RootApp < Roda
-    plugin :public
+    plugin :public, root: File.expand_path('../../public', __dir__)
     plugin :multi_run
     plugin :common_logger, LoggerProxy.new, method: :log
     run "idam", Service::SidamApp
